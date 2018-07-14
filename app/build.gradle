@@ -29,6 +29,9 @@ dependencies {
 
     // Firebase dependencies
     implementation 'com.google.firebase:firebase-core:16.0.0'
+
+    // Picasso dependency
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }
 // Necessary to use the Google services plugin for the google-services.json file
 apply plugin: 'com.google.gms.google-services'

@@ -8,17 +8,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:935931239264:android:6cf853c7e532fce2",
+        "mobilesdk_app_id": "1:935931239264:android:495247e690894468",
         "android_client_info": {
-          "package_name": "com.mike.palarz.jammyjamz"
+          "package_name": "com.palarz.mike.jammyjamz"
         }
       },
       "oauth_client": [
         {
-          "client_id": "935931239264-5kckd28p05ojffpr24h4jfnv1sacdr1r.apps.googleusercontent.com",
+          "client_id": "935931239264-pd2smrirchtb84p0l3r0a5722q9nc2vc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.mike.palarz.jammyjamz",
+            "package_name": "com.palarz.mike.jammyjamz",
             "certificate_hash": "212cc2b541069957d39f9773e0de5288121bacd1"
           }
         },
