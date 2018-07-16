@@ -1,6 +1,8 @@
 package com.palarz.mike.jammyjamz;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -11,10 +13,23 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class Newsfeed extends AppCompatActivity {
 
-    RecyclerView mRecyclerView;
-    NewsfeedAdapter mAdapter;
+    private RecyclerView mRecyclerView;
+    private NewsfeedAdapter mAdapter;
+
+    // Firebase member variables
+    private FirebaseDatabase mFirebaseDatabase;
+    // A reference to the "posts" node of the Realtime Database
+    private DatabaseReference mPostsReference;
+    // Listens to any posts which have been added to the Realtime Database
+    private ChildEventListener mPostsListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +42,11 @@ public class Newsfeed extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+
+                Post post = new Post("Sweet Child of Mine", "Guns 'n Roses", "https://images-na.ssl-images-amazon.com/images/I/71H9ZR6EGFL._SL1400_.jpg");
+                mPostsReference.push().setValue(post);
             }
         });
 
@@ -40,6 +58,49 @@ public class Newsfeed extends AppCompatActivity {
 
         mAdapter = new NewsfeedAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
+
+        // Initializing the Firebase Database and reference
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mPostsReference = mFirebaseDatabase.getReference().child("posts");
+
+        mPostsListener = new ChildEventListener() {
+            /*
+            Any post that is added to the Realtime Database should also be displayed within the
+            UI via the RecyclerView. In order for that to happen, we read from the database via
+            a ChildEventListener.
+
+            onChildAdded() is called when the app is initially launched as well as when each time a
+            new child is added to the database.
+            */
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Post addedPost = dataSnapshot.getValue(Post.class);
+                mAdapter.addData(addedPost);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        mPostsReference.addChildEventListener(mPostsListener);
+
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.palarz.mike.jammyjamz;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,8 +58,15 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
         }
 
         viewHolder.holderTitle.setText(currentPost.getTitle());
-        viewHolder.holderArtist.setText(currentPost.getArtist());
+        viewHolder.holderArtist.setText(currentPost.getArtists());
 
+    }
+
+    public void addData(Post addedPost) {
+        mPosts.add(addedPost);
+        notifyDataSetChanged();
+
+        Log.i("NewsfeedAdapter", "Number of posts in adapter: " + mPosts.size());
     }
 
     public class NewsfeedViewHolder extends RecyclerView.ViewHolder {

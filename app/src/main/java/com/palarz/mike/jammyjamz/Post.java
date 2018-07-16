@@ -1,20 +1,25 @@
 package com.palarz.mike.jammyjamz;
 
+import com.google.firebase.database.PropertyName;
+
 public class Post {
 
+    @PropertyName("title")
     private String mTitle;  // This will be either the name of the track or album
-    private String mArtist;
+    @PropertyName("artists")
+    private String mArtists;
+    @PropertyName("photoUrl")
     private String mPhotoUrl;
 
     public Post() {
         this.mTitle = "";
-        this.mArtist = "";
+        this.mArtists = "";
         this.mPhotoUrl = "";
     }
 
     public Post(String title, String artist, String photoUrl) {
         this.mTitle = title;
-        this.mArtist = artist;
+        this.mArtists = artist;
         this.mPhotoUrl = photoUrl;
     }
 
@@ -26,12 +31,12 @@ public class Post {
         this.mTitle = mTitle;
     }
 
-    public String getArtist() {
-        return mArtist;
+    public String getArtists() {
+        return mArtists;
     }
 
-    public void setArtist(String mArtist) {
-        this.mArtist = mArtist;
+    public void setArtists(String mArtist) {
+        this.mArtists = mArtist;
     }
 
     public String getPhotoUrl() {
