@@ -69,6 +69,10 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
         Log.i("NewsfeedAdapter", "Number of posts in adapter: " + mPosts.size());
     }
 
+    public void clearData() {
+        mPosts.clear();
+    }
+
     public class NewsfeedViewHolder extends RecyclerView.ViewHolder {
 
         ImageView holderArtwork;
