@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -28,11 +29,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Newsfeed extends AppCompatActivity {
+public class Newsfeed extends AppCompatActivity implements PostTypeSelection.PostTypeSelectionListener {
 
     // Request code used within onActivityResult(); this is used to identify the FirebaseUI sign-in
     // activity within onActivityResult(), which is called after the user signs in
     private static final int RC_SIGN_IN = 123;
+
+    private static final String TAG = Newsfeed.class.getSimpleName();
 
     private static final String USERNAME_ANONYMOUS = "Anonymous";
 
@@ -71,9 +74,12 @@ public class Newsfeed extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Post post = getRandomPost();
-                post.setUsername(mUsername);
-                mPostsReference.push().setValue(post);
+//                Post post = getRandomPost();
+//                post.setUsername(mUsername);
+//                mPostsReference.push().setValue(post);
+
+                PostTypeSelection dialog = new PostTypeSelection();
+                dialog.show(getSupportFragmentManager(), "dialog");
             }
         });
         // Initialized 4 different Post objects, which are strictly used for testing purposes
@@ -132,6 +138,8 @@ public class Newsfeed extends AppCompatActivity {
 
         // If the activity that we're returning from is the FirebaseUI login-in...
         if (requestCode == RC_SIGN_IN){
+            IdpResponse response = IdpResponse.fromResultIntent(data);
+
             if (resultCode == RESULT_OK) {
                 Toast.makeText(this, "Wassup, Jammer?", Toast.LENGTH_SHORT).show();
             } else if (resultCode == RESULT_CANCELED) {
@@ -140,6 +148,20 @@ public class Newsfeed extends AppCompatActivity {
                 // pressing the back button once the sign-in UI was shown), then we'll bring them
                 // back to the Newsfeed activity
                 finish();
+            } else {
+                /*
+                Sign in failed. If response is null the user canceled the sign-in flow using the
+                back button, which we'll handle by exiting the newsfeed.
+                 */
+                if (response == null) {
+                    finish();
+                } else {
+                    /*
+                    Otherwise, there was an error during the sign-in process. For now, we'll log
+                    the error code, but we should really be handling each error code individually.
+                     */
+                    Log.e(TAG, "Error occurred during sign-in. Error code: " + response.getError().getErrorCode());
+                }
             }
         }
     }
@@ -148,6 +170,8 @@ public class Newsfeed extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        // We attach our auth state listener here since we want to do so only once the app is
+        // visible, which is what occurs once onResume() is called
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
@@ -155,10 +179,14 @@ public class Newsfeed extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
+        // We first check if mAuthStateListener is null, meaning that is hasn't been previously removed
         if (mAuthStateListener != null) {
+            // We then remove the listener in onPause(). We do that here since onPause() is called
+            // when the app is no longer visible
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
 
+        // We then detach the child events listener and clear any data that may be in our adapter
         detachPostsReadListener();
         mAdapter.clearData();
     }
@@ -267,5 +295,11 @@ public class Newsfeed extends AppCompatActivity {
         mAdapter.clearData();
         detachPostsReadListener();
 
+    }
+
+    @Override
+    public void onPositiveClick(int postType) {
+        // We'll start the song search activity here
+        Log.i(TAG, "Ok button clicked within dialog");
     }
 }
