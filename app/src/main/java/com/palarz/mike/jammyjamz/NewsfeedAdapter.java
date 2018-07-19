@@ -57,6 +57,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
                     .into(viewHolder.holderArtwork);
         }
 
+        viewHolder.holderUsername.setText(currentPost.getUsername());
         viewHolder.holderTitle.setText(currentPost.getTitle());
         viewHolder.holderArtist.setText(currentPost.getArtists());
 
@@ -66,7 +67,6 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
         mPosts.add(addedPost);
         notifyDataSetChanged();
 
-        Log.i("NewsfeedAdapter", "Number of posts in adapter: " + mPosts.size());
     }
 
     public void clearData() {
@@ -75,6 +75,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
 
     public class NewsfeedViewHolder extends RecyclerView.ViewHolder {
 
+        TextView holderUsername;
         ImageView holderArtwork;
         TextView holderTitle;
         TextView holderArtist;
@@ -82,6 +83,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
         public NewsfeedViewHolder(View viewHolder) {
             super(viewHolder);
 
+            holderUsername = (TextView) viewHolder.findViewById(R.id.list_item_post_username);
             holderArtwork = (ImageView) viewHolder.findViewById(R.id.list_item_post_artwork);
             holderTitle = (TextView) viewHolder.findViewById(R.id.list_item_post_title);
             holderArtist = (TextView) viewHolder.findViewById(R.id.list_item_post_artist);

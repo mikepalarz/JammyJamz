@@ -10,17 +10,21 @@ public class Post {
     private String mArtists;
     @PropertyName("photoUrl")
     private String mPhotoUrl;
+    @PropertyName("userName")
+    private String mUsername;
 
     public Post() {
         this.mTitle = "";
         this.mArtists = "";
         this.mPhotoUrl = "";
+        this.mUsername = "";
     }
 
-    public Post(String title, String artist, String photoUrl) {
+    public Post(String username, String title, String artist, String photoUrl) {
         this.mTitle = title;
         this.mArtists = artist;
         this.mPhotoUrl = photoUrl;
+        this.mUsername = username;
     }
 
     public String getTitle() {
@@ -45,6 +49,14 @@ public class Post {
 
     public void setPhotoUrl(String mPhotoUrl) {
         this.mPhotoUrl = mPhotoUrl;
+    }
+
+    public String getUsername() {
+        return mUsername;
+    }
+
+    public void setUsername(String username) {
+        mUsername = username;
     }
 
 

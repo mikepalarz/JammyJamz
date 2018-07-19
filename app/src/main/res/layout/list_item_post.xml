@@ -6,6 +6,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <TextView
+        android:id="@+id/list_item_post_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Anonymous"
+        tools:text="Mike Palarz"
+        android:textSize="16sp"
+        tools:textSize="16sp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
     <ImageView
         android:id="@+id/list_item_post_artwork"
         android:layout_width="100dp"
@@ -17,7 +29,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/list_item_post_username"/>
 
     <TextView
         android:id="@+id/list_item_post_title"
