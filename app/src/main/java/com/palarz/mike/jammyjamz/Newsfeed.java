@@ -33,7 +33,9 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
 
     // Request code used within onActivityResult(); this is used to identify the FirebaseUI sign-in
     // activity within onActivityResult(), which is called after the user signs in
-    private static final int RC_SIGN_IN = 123;
+    private static final int RC_SIGN_IN = 1;
+
+    private static final int RC_NEW_POST = 2;
 
     private static final String TAG = Newsfeed.class.getSimpleName();
 
@@ -163,6 +165,9 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
                     Log.e(TAG, "Error occurred during sign-in. Error code: " + response.getError().getErrorCode());
                 }
             }
+        }
+        else if (requestCode == RC_NEW_POST) {
+            Log.i(TAG, "Returning back from PostSearchResultsBackup.");
         }
     }
 
@@ -301,5 +306,10 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     public void onPositiveClick(int postType) {
         // We'll start the song search activity here
         Log.i(TAG, "Ok button clicked within dialog");
+
+        Intent intent = new Intent(this, PostSearchResults.class);
+        intent.putExtra(PostSearchResultsBackup.EXTRA_POST_TYPE, postType);
+
+        startActivityForResult(intent, RC_NEW_POST);
     }
 }

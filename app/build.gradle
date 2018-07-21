@@ -35,6 +35,10 @@ dependencies {
 
     // Picasso dependency
     implementation 'com.squareup.picasso:picasso:2.71828'
+
+    // Retrofit dependency
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 }
 // Necessary to use the Google services plugin for the google-services.json file
 apply plugin: 'com.google.gms.google-services'
