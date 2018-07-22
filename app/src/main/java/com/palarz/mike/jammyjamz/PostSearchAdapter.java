@@ -28,7 +28,7 @@ public abstract class PostSearchAdapter<T extends SpotifyObject> extends Recycle
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PostSearchViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PostSearchAdapter.PostSearchViewHolder holder, int position) {
         holder.bind(mSearchResults.get(position));
     }
 
@@ -40,7 +40,10 @@ public abstract class PostSearchAdapter<T extends SpotifyObject> extends Recycle
     }
 
     public void addData(List<T> newData){
-        mSearchResults.addAll(newData);
+
+        for (T data : newData){
+            mSearchResults.add(data);
+        }
         notifyDataSetChanged();
     }
 
@@ -61,9 +64,9 @@ public abstract class PostSearchAdapter<T extends SpotifyObject> extends Recycle
 
     protected abstract class PostSearchViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView mCover;
-        private TextView mTitle;
-        private TextView mArtist;
+        protected final ImageView mCover;
+        protected final TextView mTitle;
+        protected final TextView mArtist;
 
         protected PostSearchViewHolder(View viewHolder) {
             super(viewHolder);

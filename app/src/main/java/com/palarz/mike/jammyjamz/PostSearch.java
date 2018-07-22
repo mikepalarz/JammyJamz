@@ -168,9 +168,7 @@ public class PostSearch extends AppCompatActivity {
                     PagingTracks pagingTracks = rootJSONResponse.getPagingTracks();
                     List<Track> tracks = pagingTracks.getTracks();
                     mAdapter.addData(tracks);
-//                    for (Track track : tracks) {
-//                        mAdapter.add(track);
-//                    }
+
                     mProgressBar.setVisibility(ProgressBar.GONE);
                 }
             }

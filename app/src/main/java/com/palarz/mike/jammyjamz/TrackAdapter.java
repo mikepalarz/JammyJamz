@@ -35,14 +35,14 @@ public class TrackAdapter extends PostSearchAdapter<Track> {
 
         @Override
         protected void bind(Track data) {
-            super.getTitle().setText(data.getTitle());
-            super.getArtist().setText(data.getArtistNames());
+            super.mTitle.setText(data.getTitle());
+            super.mArtist.setText(data.getArtistNames());
 
             if (!TextUtils.isEmpty(data.getAlbum().getLargeAlbumCover())) {
                 Picasso.get()
                         .load(Uri.parse(data.getAlbum().getLargeAlbumCover()))
                         .error(R.drawable.ic_no_cover)
-                        .into(super.getCover());
+                        .into(super.mCover);
             }
         }
     }
