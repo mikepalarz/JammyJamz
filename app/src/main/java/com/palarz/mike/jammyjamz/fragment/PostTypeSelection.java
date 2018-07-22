@@ -1,4 +1,4 @@
-package com.palarz.mike.jammyjamz;
+package com.palarz.mike.jammyjamz.fragment;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+
+import com.palarz.mike.jammyjamz.R;
 
 public class PostTypeSelection extends DialogFragment {
 

@@ -1,4 +1,4 @@
-package com.palarz.mike.jammyjamz;
+package com.palarz.mike.jammyjamz.model.spotify;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -20,32 +20,50 @@ public class Album extends SpotifyObject {
 
     // The cover art for the album in various sizes, widest first.
     @SerializedName("images")
-    List<AlbumCover> mAlbumCovers;
+    List<SpotifyImage> mAlbumCovers;
+
+    @SerializedName("artists")
+    List<Artist> mArtists;
 
     public Album() {
         super();
 
         this.mAlbumTitle = "";
         this.mAlbumCovers = new ArrayList<>();
+        this.mArtists = new ArrayList<>();
     }
 
-    public Album(String href, String id, String type, String uri, String albumTitle, ArrayList<AlbumCover> albumCovers) {
+    public Album(String href, String id, String type, String uri, String albumTitle, ArrayList<SpotifyImage> albumCovers, ArrayList<Artist> artists) {
         super(href, id, type, uri);
 
         this.mAlbumTitle = albumTitle;
         this.mAlbumCovers = albumCovers;
+        this.mArtists = artists;
     }
 
     public String getAlbumTitle() {
         return mAlbumTitle;
     }
 
-    public List<AlbumCover> getAlbumCovers() {
+    public List<SpotifyImage> getAlbumCovers() {
         return mAlbumCovers;
     }
 
     public String getLargeAlbumCover() {
-        return mAlbumCovers.get(0).getURL();
+        return SpotifyImage.getLargeImage(mAlbumCovers);
+    }
+
+    public List<Artist> getArtists(){
+        return mArtists;
+    }
+
+    /**
+     * Generates a comma-separated String of the artists associated to the track
+     *
+     * @return A comma-separated String of the artists associated to the track
+     */
+    public String getArtistNames() {
+        return Artist.getArtistNames(mArtists);
     }
 
 }

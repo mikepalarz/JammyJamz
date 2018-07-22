@@ -1,4 +1,4 @@
-package com.palarz.mike.jammyjamz;
+package com.palarz.mike.jammyjamz.model;
 
 import com.google.firebase.database.PropertyName;
 

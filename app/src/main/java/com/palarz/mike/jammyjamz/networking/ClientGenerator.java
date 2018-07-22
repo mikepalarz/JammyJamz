@@ -1,4 +1,4 @@
-package com.palarz.mike.jammyjamz;
+package com.palarz.mike.jammyjamz.networking;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -17,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ClientGenerator {
 
-    public static String mBaseURL = SongClient.BASE_URL_ACCOUNTS;
+    public static String mBaseURL = SearchClient.BASE_URL_ACCOUNTS;
 
     private static OkHttpClient.Builder sClientBuilder = new OkHttpClient.Builder();
 

@@ -1,4 +1,4 @@
-package com.palarz.mike.jammyjamz;
+package com.palarz.mike.jammyjamz.networking;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -13,7 +13,7 @@ import com.google.gson.annotations.SerializedName;
  *
  */
 
-class TokenResponse {
+public class TokenResponse {
 
     @SerializedName("access_token")
     String mAccessToken;

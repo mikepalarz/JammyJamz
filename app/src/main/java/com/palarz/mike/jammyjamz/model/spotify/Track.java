@@ -1,4 +1,4 @@
-package com.palarz.mike.jammyjamz;
+package com.palarz.mike.jammyjamz.model.spotify;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -69,19 +69,7 @@ public class Track extends SpotifyObject {
      * @return A comma-separated String of the artists associated to the track
      */
     public String getArtistNames() {
-        if (mArtists == null || mArtists.size() == 0) {
-            return "";
-        }
-
-        String artistNames = mArtists.get(0).getName();
-
-        if (mArtists.size() > 1) {
-            for (int i = 1; i < mArtists.size(); i++) {
-                artistNames += ", " + mArtists.get(i).getName();
-            }
-        }
-
-        return artistNames;
+        return Artist.getArtistNames(mArtists);
     }
 
 }

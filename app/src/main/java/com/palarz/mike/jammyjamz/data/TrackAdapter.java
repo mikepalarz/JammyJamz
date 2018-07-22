@@ -1,4 +1,4 @@
-package com.palarz.mike.jammyjamz;
+package com.palarz.mike.jammyjamz.data;
 
 import android.content.Context;
 import android.net.Uri;
@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.palarz.mike.jammyjamz.R;
+import com.palarz.mike.jammyjamz.model.spotify.Track;
 import com.squareup.picasso.Picasso;
 
 public class TrackAdapter extends PostSearchAdapter<Track> {

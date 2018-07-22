@@ -1,6 +1,8 @@
-package com.palarz.mike.jammyjamz;
+package com.palarz.mike.jammyjamz.model.spotify;
 
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 /**
  * A class which represents an image object from the Spotify Web API:
@@ -11,27 +13,27 @@ import com.google.gson.annotations.SerializedName;
  * to the user.
  */
 
-class AlbumCover {
+class SpotifyImage {
 
     // The image height in pixels. If unknown: null or not returned.
     @SerializedName("height")
-    int mHeight;
+    private int mHeight;
 
     // The image width in pixels. If unknown: null or not returned.
     @SerializedName("width")
-    int mWidth;
+    private int mWidth;
 
     // The source URL of the image.
     @SerializedName("url")
-    String mURL;
+    private String mURL;
 
-    public AlbumCover() {
+    public SpotifyImage() {
         this.mHeight = 0;
         this.mWidth = 0;
         this.mURL = "";
     }
 
-    public AlbumCover(int height, int width, String url) {
+    public SpotifyImage(int height, int width, String url) {
         this.mHeight = height;
         this.mWidth = width;
         this.mURL = url;
@@ -47,6 +49,14 @@ class AlbumCover {
 
     public String getURL() {
         return mURL;
+    }
+
+    public static String getLargeImage(List<SpotifyImage> images){
+        if ( (images == null) || (images.size() == 0)){
+            return "";
+        } else{
+            return images.get(0).getURL();
+        }
     }
 
 }

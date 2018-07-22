@@ -1,4 +1,4 @@
-package com.palarz.mike.jammyjamz;
+package com.palarz.mike.jammyjamz.model.spotify;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -19,15 +19,33 @@ public class RootJSONResponse {
     @SerializedName("tracks")
     PagingTracks mPagingTracks;
 
+    @SerializedName("albums")
+    PagingAlbums mPagingAlbums;
+
+    @SerializedName("artists")
+    PagingArtists mPagingArtists;
+
     public RootJSONResponse() {
         this.mPagingTracks = new PagingTracks();
+        this.mPagingAlbums = new PagingAlbums();
+        this.mPagingArtists = new PagingArtists();
     }
 
-    public RootJSONResponse(PagingTracks pagingTracks) {
+    public RootJSONResponse(PagingTracks pagingTracks, PagingAlbums pagingAlbums, PagingArtists pagingArtists) {
         this.mPagingTracks = pagingTracks;
+        this.mPagingAlbums = pagingAlbums;
+        this.mPagingArtists = pagingArtists;
     }
 
     public PagingTracks getPagingTracks() {
         return mPagingTracks;
+    }
+
+    public PagingAlbums getPagingAlbums() {
+        return mPagingAlbums;
+    }
+
+    public PagingArtists getPagingArtists() {
+        return mPagingArtists;
     }
 }

@@ -1,4 +1,4 @@
-package com.palarz.mike.jammyjamz;
+package com.palarz.mike.jammyjamz.activity;
 
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -10,11 +10,22 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
 import android.support.v7.widget.SearchView;
 import android.widget.ProgressBar;
 
-import java.util.ArrayList;
+import com.palarz.mike.jammyjamz.networking.ClientGenerator;
+import com.palarz.mike.jammyjamz.data.PostSearchAdapter;
+import com.palarz.mike.jammyjamz.R;
+import com.palarz.mike.jammyjamz.networking.SearchClient;
+import com.palarz.mike.jammyjamz.networking.TokenResponse;
+import com.palarz.mike.jammyjamz.model.spotify.Album;
+import com.palarz.mike.jammyjamz.model.spotify.Artist;
+import com.palarz.mike.jammyjamz.model.spotify.PagingAlbums;
+import com.palarz.mike.jammyjamz.model.spotify.PagingArtists;
+import com.palarz.mike.jammyjamz.model.spotify.PagingTracks;
+import com.palarz.mike.jammyjamz.model.spotify.RootJSONResponse;
+import com.palarz.mike.jammyjamz.model.spotify.Track;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -39,14 +50,18 @@ public class PostSearch extends AppCompatActivity {
 
     private RecyclerView mSeachResults; // Contains the results of the search request
     private PostSearchAdapter mAdapter;
-    private SongClient mClient; // Instance of SongClient which is used to perform all HTTP requests
+    private SearchClient mClient; // Instance of SearchClient which is used to perform all HTTP requests
     private ProgressBar mProgressBar;
     private String mAccessToken;    // Stores the access token obtained through retrieveAccessToken()
+    private int mSearchType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_search);
+
+        mSearchType = getIntent().getIntExtra(EXTRA_POST_TYPE, 0);
+        Log.i(TAG, "Search type: " + mSearchType);
 
         mSeachResults = (RecyclerView) findViewById(R.id.post_search_recyclerview);
         mSeachResults.setHasFixedSize(true);
@@ -54,7 +69,7 @@ public class PostSearch extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mSeachResults.setLayoutManager(layoutManager);
 
-        mAdapter = PostSearchAdapter.create(this, 0);
+        mAdapter = PostSearchAdapter.create(this, mSearchType);
         mSeachResults.setAdapter(mAdapter);
 
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
@@ -67,10 +82,11 @@ public class PostSearch extends AppCompatActivity {
     /**
      * Retrieves the access token that is used for subsequent search requests
      */
+    // TODO: This should really only be called once. Try to adjust this method so that is the case.
     private void retrieveAccessToken() {
 
-        // First, we obtain an instance of SongClient through our ClientGenerator class
-        mClient = ClientGenerator.createClient(SongClient.class);
+        // First, we obtain an instance of SearchClient through our ClientGenerator class
+        mClient = ClientGenerator.createClient(SearchClient.class);
 
         // We then obtain the client ID and client secret encoded in Base64.
         String encodedString = encodeClientIDAndSecret();
@@ -130,16 +146,16 @@ public class PostSearch extends AppCompatActivity {
      *
      * @param query The query that the user entered into the SearchView.
      */
-    private void fetchSongs(String query) {
+    private void fetchTracks(String query) {
         // We show the ProgressBar to the user so that they're aware that the HTTP request is being made
         mProgressBar.setVisibility(ProgressBar.VISIBLE);
 
-        // We also need to change the base URL of the SongClient since it was previously set to
+        // We also need to change the base URL of the SearchClient since it was previously set to
         // the one that is used for the access token
-        ClientGenerator.changeBaseURL(SongClient.BASE_URL_SEARCH);
+        ClientGenerator.changeBaseURL(SearchClient.BASE_URL_SEARCH);
 
-        // Finally, we obtain a new instance of the SongClient with the appropriate base URL
-        mClient = ClientGenerator.createClient(SongClient.class);
+        // Finally, we obtain a new instance of the SearchClient with the appropriate base URL
+        mClient = ClientGenerator.createClient(SearchClient.class);
 
         // If we didn't obtain an access token, then we simply stop performing the search
         if (TextUtils.isEmpty(mAccessToken)) {
@@ -181,19 +197,133 @@ public class PostSearch extends AppCompatActivity {
         });
     }
 
+    private void fetchAlbums(String query) {
+        // We show the ProgressBar to the user so that they're aware that the HTTP request is being made
+        mProgressBar.setVisibility(ProgressBar.VISIBLE);
+
+        // We also need to change the base URL of the SearchClient since it was previously set to
+        // the one that is used for the access token
+        ClientGenerator.changeBaseURL(SearchClient.BASE_URL_SEARCH);
+
+        // Finally, we obtain a new instance of the SearchClient with the appropriate base URL
+        mClient = ClientGenerator.createClient(SearchClient.class);
+
+        // If we didn't obtain an access token, then we simply stop performing the search
+        if (TextUtils.isEmpty(mAccessToken)) {
+            // We also want to be sure that we no longer show the ProgressBar
+            mProgressBar.setVisibility(ProgressBar.GONE);
+            return;
+        }
+
+        // Finally, we create our call object and initiate the HTTP request.
+        Call<RootJSONResponse> call = mClient.searchForAlbum("Bearer " + mAccessToken, query);
+
+        call.enqueue(new Callback<RootJSONResponse>() {
+            @Override
+            public void onResponse(Call<RootJSONResponse> call, Response<RootJSONResponse> response) {
+                RootJSONResponse rootJSONResponse = null;
+
+                // If the response was successful...
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "onResponse: The full URL: " + call.request().url());
+
+                    // ...we clear the adapter and populate the RootJSONResponse object
+                    mAdapter.clearData();
+                    rootJSONResponse = response.body();
+
+                    // We then extract the tracks and add them to the adapter to be displayed
+                    PagingAlbums pagingAlbums = rootJSONResponse.getPagingAlbums();
+                    List<Album> albums = pagingAlbums.getAlbums();
+                    mAdapter.addData(albums);
+
+                    mProgressBar.setVisibility(ProgressBar.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RootJSONResponse> call, Throwable t) {
+                Log.d(TAG, "onFailure: The full URL: " + call.request().url());
+                mProgressBar.setVisibility(ProgressBar.GONE);
+            }
+        });
+    }
+
+    private void fetchArtists(String query) {
+        // We show the ProgressBar to the user so that they're aware that the HTTP request is being made
+        mProgressBar.setVisibility(ProgressBar.VISIBLE);
+
+        // We also need to change the base URL of the SearchClient since it was previously set to
+        // the one that is used for the access token
+        ClientGenerator.changeBaseURL(SearchClient.BASE_URL_SEARCH);
+
+        // Finally, we obtain a new instance of the SearchClient with the appropriate base URL
+        mClient = ClientGenerator.createClient(SearchClient.class);
+
+        // If we didn't obtain an access token, then we simply stop performing the search
+        if (TextUtils.isEmpty(mAccessToken)) {
+            // We also want to be sure that we no longer show the ProgressBar
+            mProgressBar.setVisibility(ProgressBar.GONE);
+            return;
+        }
+
+        // Finally, we create our call object and initiate the HTTP request.
+        Call<RootJSONResponse> call = mClient.searchForArtist("Bearer " + mAccessToken, query);
+
+        call.enqueue(new Callback<RootJSONResponse>() {
+            @Override
+            public void onResponse(Call<RootJSONResponse> call, Response<RootJSONResponse> response) {
+                RootJSONResponse rootJSONResponse = null;
+
+                // If the response was successful...
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "onResponse: The full URL: " + call.request().url());
+
+                    // ...we clear the adapter and populate the RootJSONResponse object
+                    mAdapter.clearData();
+                    rootJSONResponse = response.body();
+
+                    // We then extract the tracks and add them to the adapter to be displayed
+                    PagingArtists pagingArtists = rootJSONResponse.getPagingArtists();
+                    List<Artist> artists = pagingArtists.getArtists();
+                    mAdapter.addData(artists);
+
+                    mProgressBar.setVisibility(ProgressBar.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RootJSONResponse> call, Throwable t) {
+                Log.d(TAG, "onFailure: The full URL: " + call.request().url());
+                mProgressBar.setVisibility(ProgressBar.GONE);
+            }
+        });
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_post_search, menu);
         final MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
-        // We set an OnQueryTextListener to the SearchView so that fetchSongs() is fired each time
+        // We set an OnQueryTextListener to the SearchView so that fetchTracks() is fired each time
         // a search request is made
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // Fetch the remote data
-                fetchSongs(query);
+                switch (mSearchType){
+                    case 0:
+                        fetchTracks(query);
+                        break;
+                    case 1:
+                        fetchAlbums(query);
+                        break;
+                    case 2:
+                        fetchArtists(query);
+                        break;
+                    default:
+                        break;
+                }
                 // Reset the SearchView
                 searchView.clearFocus();
                 searchView.setQuery("", false);

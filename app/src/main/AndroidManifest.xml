@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Newsfeed"
+            android:name=".activity.Newsfeed"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -20,12 +20,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PostSearch"
+            android:name=".activity.PostSearch"
             android:label="@string/title_activity_post_search_results"
-            android:parentActivityName=".Newsfeed">
+            android:parentActivityName=".activity.Newsfeed">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.palarz.mike.jammyjamz.Newsfeed" />
+                android:value="com.palarz.mike.jammyjamz.activity.Newsfeed" />
         </activity>
     </application>
 

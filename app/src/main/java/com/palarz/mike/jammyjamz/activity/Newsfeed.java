@@ -1,4 +1,4 @@
-package com.palarz.mike.jammyjamz;
+package com.palarz.mike.jammyjamz.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,6 +24,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.palarz.mike.jammyjamz.data.NewsfeedAdapter;
+import com.palarz.mike.jammyjamz.fragment.PostTypeSelection;
+import com.palarz.mike.jammyjamz.R;
+import com.palarz.mike.jammyjamz.model.Post;
 
 import java.util.ArrayList;
 import java.util.Arrays;
