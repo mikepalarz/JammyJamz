@@ -12,7 +12,7 @@ import java.util.List;
  *
  */
 
-public class Album {
+public class Album extends SpotifyObject {
 
     // The name of the album. In case of an album takedown, the value may be an empty string.
     @SerializedName("name")
@@ -23,11 +23,15 @@ public class Album {
     List<AlbumCover> mAlbumCovers;
 
     public Album() {
+        super();
+
         this.mAlbumTitle = "";
         this.mAlbumCovers = new ArrayList<>();
     }
 
-    public Album(String albumTitle, ArrayList<AlbumCover> albumCovers) {
+    public Album(String href, String id, String type, String uri, String albumTitle, ArrayList<AlbumCover> albumCovers) {
+        super(href, id, type, uri);
+
         this.mAlbumTitle = albumTitle;
         this.mAlbumCovers = albumCovers;
     }

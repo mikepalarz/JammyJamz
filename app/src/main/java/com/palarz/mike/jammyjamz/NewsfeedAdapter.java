@@ -75,10 +75,10 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
 
     public class NewsfeedViewHolder extends RecyclerView.ViewHolder {
 
-        TextView holderUsername;
-        ImageView holderArtwork;
-        TextView holderTitle;
-        TextView holderArtist;
+        private TextView holderUsername;
+        private ImageView holderArtwork;
+        private TextView holderTitle;
+        private TextView holderArtist;
 
         public NewsfeedViewHolder(View viewHolder) {
             super(viewHolder);

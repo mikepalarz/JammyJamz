@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PostSearchResults"
+            android:name=".PostSearch"
             android:label="@string/title_activity_post_search_results"
             android:parentActivityName=".Newsfeed">
             <meta-data

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.palarz.mike.songsearch.SongListActivity">
+    android:orientation="vertical"
+    tools:context="com.palarz.mike.jammyjamz.PostSearch">
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -15,10 +16,11 @@
         android:indeterminate="true"
         android:visibility="gone"/>
 
-    <ListView
-        android:id="@+id/book_list_list_view"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/post_search_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:clipToPadding="false" />
 
 
 </LinearLayout>

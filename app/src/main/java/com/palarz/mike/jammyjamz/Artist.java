@@ -11,16 +11,20 @@ import com.google.gson.annotations.SerializedName;
  * results are displayed to the user.
  */
 
-public class Artist {
+public class Artist extends SpotifyObject {
 
     @SerializedName("name")
     String mName;
 
     public Artist() {
+        super();
+
         this.mName = "";
     }
 
-    public Artist(String name) {
+    public Artist(String href, String id, String type, String uri, String name) {
+        super(href, id, type, uri);
+
         this.mName = name;
     }
 

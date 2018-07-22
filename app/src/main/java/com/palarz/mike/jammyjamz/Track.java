@@ -19,7 +19,7 @@ import java.util.List;
  *
  */
 
-public class Track {
+public class Track extends SpotifyObject {
 
     // The name of the track.
     @SerializedName("name")
@@ -36,12 +36,16 @@ public class Track {
     List<Artist> mArtists;
 
     public Track() {
+        super();
+
         this.mTitle = "";
         this.mAlbum = new Album();
         this.mArtists = new ArrayList<>();
     }
 
-    public Track(String title, Album album, ArrayList<Artist> artists) {
+    public Track(String href, String id, String type, String uri, String title, Album album, ArrayList<Artist> artists) {
+        super(href, id, type, uri);
+
         this.mTitle = title;
         this.mAlbum = album;
         this.mArtists = artists;

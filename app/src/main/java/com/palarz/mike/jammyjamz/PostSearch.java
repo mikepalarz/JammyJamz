@@ -3,6 +3,8 @@ package com.palarz.mike.jammyjamz;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -24,17 +26,19 @@ import retrofit2.Response;
  * request is made, the results are shown within a ListView.
  */
 
-public class PostSearchResults extends AppCompatActivity {
+public class PostSearch extends AppCompatActivity {
 
-    private static final String TAG = PostSearchResults.class.getSimpleName();
+    private static final String TAG = PostSearch.class.getSimpleName();
+
+    public static final String EXTRA_POST_TYPE = "post_type";
 
     // Client ID and secret that are used to obtain the access token to the Spotify Web API
     // TODO: I really, really need to figure out a better way to hide these...
     private static final String CLIENT_ID = "e31c0e021bb24dbcb39717172c68dd98";
     private static final String CLIENT_SECRET = "788b8ae21bb644c9a660c613cc912000";
 
-    private ListView mSeachResults; // Contains the results of the search request
-    private SongAdapter mAdapter;
+    private RecyclerView mSeachResults; // Contains the results of the search request
+    private PostSearchAdapter mAdapter;
     private SongClient mClient; // Instance of SongClient which is used to perform all HTTP requests
     private ProgressBar mProgressBar;
     private String mAccessToken;    // Stores the access token obtained through retrieveAccessToken()
@@ -42,11 +46,15 @@ public class PostSearchResults extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book_list);
+        setContentView(R.layout.activity_post_search);
 
-        mSeachResults = (ListView) findViewById(R.id.book_list_list_view);
-        ArrayList<Track> tracks = new ArrayList<>();
-        mAdapter = new SongAdapter(this, tracks);
+        mSeachResults = (RecyclerView) findViewById(R.id.post_search_recyclerview);
+        mSeachResults.setHasFixedSize(true);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mSeachResults.setLayoutManager(layoutManager);
+
+        mAdapter = PostSearchAdapter.create(this, 0);
         mSeachResults.setAdapter(mAdapter);
 
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
@@ -153,16 +161,16 @@ public class PostSearchResults extends AppCompatActivity {
                     Log.d(TAG, "onResponse: The full URL: " + call.request().url());
 
                     // ...we clear the adapter and populate the RootJSONResponse object
-                    mAdapter.clear();
+                    mAdapter.clearData();
                     rootJSONResponse = response.body();
 
                     // We then extract the tracks and add them to the adapter to be displayed
                     PagingTracks pagingTracks = rootJSONResponse.getPagingTracks();
                     List<Track> tracks = pagingTracks.getTracks();
-                    for (Track track : tracks) {
-                        mAdapter.add(track);
-                    }
-                    mAdapter.notifyDataSetChanged();
+                    mAdapter.addData(tracks);
+//                    for (Track track : tracks) {
+//                        mAdapter.add(track);
+//                    }
                     mProgressBar.setVisibility(ProgressBar.GONE);
                 }
             }
@@ -177,7 +185,7 @@ public class PostSearchResults extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_action_bar, menu);
+        getMenuInflater().inflate(R.menu.menu_post_search, menu);
         final MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
@@ -194,7 +202,7 @@ public class PostSearchResults extends AppCompatActivity {
                 searchView.setIconified(true);
                 searchItem.collapseActionView();
                 // We'll also set the title of the activity to the current search query
-                PostSearchResults.this.setTitle(query);
+                PostSearch.this.setTitle(query);
 
                 return true;
             }

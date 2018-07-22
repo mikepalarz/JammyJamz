@@ -307,8 +307,8 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         // We'll start the song search activity here
         Log.i(TAG, "Ok button clicked within dialog");
 
-        Intent intent = new Intent(this, PostSearchResults.class);
-        intent.putExtra(PostSearchResultsBackup.EXTRA_POST_TYPE, postType);
+        Intent intent = new Intent(this, PostSearch.class);
+        intent.putExtra(PostSearch.EXTRA_POST_TYPE, postType);
 
         startActivityForResult(intent, RC_NEW_POST);
     }
