@@ -1,5 +1,7 @@
 package com.palarz.mike.jammyjamz.activity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,7 +34,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
+/**ACCESS_TOKEN
  * The main activity of the app which allows the end user to search for a song. Once the search
  * request is made, the results are shown within a ListView.
  */
@@ -40,6 +42,9 @@ import retrofit2.Response;
 public class PostSearch extends AppCompatActivity {
 
     private static final String TAG = PostSearch.class.getSimpleName();
+    private static final String PREFERENCES_KEY_TOKEN_RESPONSE_ACCESS_TOKEN = "com.palarz.mike.jammyjamz.access_token";
+    private static final String PREFERENCES_KEY_TOKEN_RESPONSE_TOKEN_TYPE = "com.palarz.mike.jammyjamz.token_type";
+    private static final String PREFERENCES_KEY_TOKEN_RESPONSE_EXPIRATION = "com.palarz.mike.jammyjamz.expiration";
 
     public static final String EXTRA_POST_TYPE = "post_type";
 
@@ -74,15 +79,17 @@ public class PostSearch extends AppCompatActivity {
 
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
-        // Upon start-up, we obtain the access token so that we're ready for any search requests
-        // that the user may have
-        retrieveAccessToken();
+
+        mAccessToken = getAccessToken();
+
+        if (mAccessToken.isEmpty() || mAccessToken == null) {
+            retrieveAccessToken();
+        }
     }
 
     /**
      * Retrieves the access token that is used for subsequent search requests
      */
-    // TODO: This should really only be called once. Try to adjust this method so that is the case.
     private void retrieveAccessToken() {
 
         // First, we obtain an instance of SearchClient through our ClientGenerator class
@@ -100,8 +107,9 @@ public class PostSearch extends AppCompatActivity {
                 TokenResponse tokenResponse = null;
                 if (response.isSuccessful()) {
                     tokenResponse = response.body();
-                    Log.d(TAG, "Access token value: " + tokenResponse.getAccessToken());
+                    Log.d(TAG, tokenResponse.toString());
                     mAccessToken = tokenResponse.getAccessToken();
+                    saveAccessToken(tokenResponse);
                 }
             }
 
@@ -137,6 +145,28 @@ public class PostSearch extends AppCompatActivity {
 
         // The final output needs to have both the encoded String as well as 'Basic ' prepended to it
         return basic + encodedString;
+    }
+
+    private void saveAccessToken(TokenResponse tokenResponse){
+        /*
+        We're using getPreferences() here instead of getSharedPreferences() since getPreferences()
+        provides us with the default SharedPreferences for the current activity. If we used
+        getSharedPreferences(), then other activities could potentially access the same
+        SharedPreferences file. We only want PostSearch to be able to save the access token
+        for now, so getPreferences() works fine for our purposes.
+        */
+
+        SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
+        editor.putString(PREFERENCES_KEY_TOKEN_RESPONSE_ACCESS_TOKEN, tokenResponse.getAccessToken());
+        editor.putString(PREFERENCES_KEY_TOKEN_RESPONSE_TOKEN_TYPE, tokenResponse.getTokenType());
+        editor.putInt(PREFERENCES_KEY_TOKEN_RESPONSE_EXPIRATION, tokenResponse.getExpiration());
+        editor.commit();
+
+    }
+
+    private String getAccessToken() {
+        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+        return preferences.getString(PREFERENCES_KEY_TOKEN_RESPONSE_ACCESS_TOKEN, "");
     }
 
     /**

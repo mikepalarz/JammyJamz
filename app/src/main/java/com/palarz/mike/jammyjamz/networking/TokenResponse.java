@@ -24,13 +24,14 @@ public class TokenResponse {
     @SerializedName("expires_in")
     int mExpiration;
 
+
     public TokenResponse() {
         this.mAccessToken = "";
         this.mTokenType = "";
         this.mExpiration = 0;
     }
 
-    public TokenResponse(String accessToken, String tokenType, int expiration) {
+    public TokenResponse(String accessToken, String tokenType, int expiration, String refreshToken) {
         this.mAccessToken = accessToken;
         this.mTokenType = tokenType;
         this.mExpiration = expiration;
@@ -47,6 +48,13 @@ public class TokenResponse {
 
     public int getExpiration() {
         return mExpiration;
+    }
+
+
+    public String toString(){
+        return "Access token: " + this.getAccessToken()
+                + "\nToken type: " + this.getTokenType()
+                + "\nExpiration: " + this.getExpiration();
     }
 
 }
