@@ -45,6 +45,7 @@ public class PostSearch extends AppCompatActivity {
     private static final String PREFERENCES_KEY_TOKEN_RESPONSE_ACCESS_TOKEN = "com.palarz.mike.jammyjamz.access_token";
     private static final String PREFERENCES_KEY_TOKEN_RESPONSE_TOKEN_TYPE = "com.palarz.mike.jammyjamz.token_type";
     private static final String PREFERENCES_KEY_TOKEN_RESPONSE_EXPIRATION = "com.palarz.mike.jammyjamz.expiration";
+    private static final String PREFERENCES_KEY_TOKEN_RESPONSE_TIME_SAVED = "com.palarz.mike.jammyjamz.time_saved";
 
     public static final String EXTRA_POST_TYPE = "post_type";
 
@@ -82,7 +83,8 @@ public class PostSearch extends AppCompatActivity {
 
         mAccessToken = getAccessToken();
 
-        if (mAccessToken.isEmpty() || mAccessToken == null) {
+        // If the access token is expired, then we will attempt to retrieve a new one
+        if (accessTokenExpired()) {
             retrieveAccessToken();
         }
     }
@@ -159,9 +161,30 @@ public class PostSearch extends AppCompatActivity {
         SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
         editor.putString(PREFERENCES_KEY_TOKEN_RESPONSE_ACCESS_TOKEN, tokenResponse.getAccessToken());
         editor.putString(PREFERENCES_KEY_TOKEN_RESPONSE_TOKEN_TYPE, tokenResponse.getTokenType());
-        editor.putInt(PREFERENCES_KEY_TOKEN_RESPONSE_EXPIRATION, tokenResponse.getExpiration());
+        editor.putLong(PREFERENCES_KEY_TOKEN_RESPONSE_EXPIRATION, tokenResponse.getExpiration());
+        editor.putLong(PREFERENCES_KEY_TOKEN_RESPONSE_TIME_SAVED, System.currentTimeMillis()/1000);
         editor.commit();
 
+    }
+
+    private boolean accessTokenExpired() {
+        // If mAccessToken hasn't yet been initialized, that means that we need to try to retrieve
+        // an access token. In this case, we will return true;
+        if (mAccessToken == null) {
+            return true;
+        }
+
+        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+        long timeSaved = preferences.getLong(PREFERENCES_KEY_TOKEN_RESPONSE_TIME_SAVED, 0);
+        long expiration = preferences.getLong(PREFERENCES_KEY_TOKEN_RESPONSE_EXPIRATION, 0);
+        long now = System.currentTimeMillis()/1000;
+        long timePassed = Math.abs(now - timeSaved);
+
+        if (timePassed >= expiration) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private String getAccessToken() {
