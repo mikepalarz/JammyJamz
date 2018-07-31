@@ -175,8 +175,8 @@ public class PostSearch extends AppCompatActivity {
         }
 
         SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
-        long timeSaved = preferences.getLong(PREFERENCES_KEY_TOKEN_RESPONSE_TIME_SAVED, 0);
-        long expiration = preferences.getLong(PREFERENCES_KEY_TOKEN_RESPONSE_EXPIRATION, 0);
+        long timeSaved = preferences.getLong(PREFERENCES_KEY_TOKEN_RESPONSE_TIME_SAVED, 0L);
+        long expiration = preferences.getLong(PREFERENCES_KEY_TOKEN_RESPONSE_EXPIRATION, 0L);
         long now = System.currentTimeMillis()/1000;
         long timePassed = Math.abs(now - timeSaved);
 
