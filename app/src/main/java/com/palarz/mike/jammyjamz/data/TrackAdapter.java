@@ -1,18 +1,23 @@
 package com.palarz.mike.jammyjamz.data;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.palarz.mike.jammyjamz.R;
+import com.palarz.mike.jammyjamz.activity.WritePost;
 import com.palarz.mike.jammyjamz.model.spotify.Track;
 import com.squareup.picasso.Picasso;
 
 public class TrackAdapter extends PostSearchAdapter<Track> {
+
+    private static final String TAG = TrackAdapter.class.getSimpleName();
 
     public TrackAdapter(Context context){
         super(context);
@@ -46,6 +51,14 @@ public class TrackAdapter extends PostSearchAdapter<Track> {
                         .error(R.drawable.ic_no_cover)
                         .into(super.mCover);
             }
+        }
+
+        @Override
+        protected void handleOnClick(Track data, Context context){
+            Log.i(TAG, "Here is the track: " + data.toString());
+
+            Intent intent = new Intent(context, WritePost.class);
+            context.startActivity(intent);
         }
     }
 

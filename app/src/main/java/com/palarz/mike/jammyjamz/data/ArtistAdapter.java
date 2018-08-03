@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import com.palarz.mike.jammyjamz.model.spotify.Artist;
 import com.squareup.picasso.Picasso;
 
 public class ArtistAdapter extends PostSearchAdapter<Artist> {
+
+    private static final String TAG = ArtistAdapter.class.getSimpleName();
 
     public ArtistAdapter(Context context){
         super(context);
@@ -48,6 +51,10 @@ public class ArtistAdapter extends PostSearchAdapter<Artist> {
             }
         }
 
+        @Override
+        protected void handleOnClick(Artist data, Context context) {
+            Log.i(TAG, "Here is the artist: " + data.toString());
+        }
     }
 
 }

@@ -66,4 +66,8 @@ public class Album extends SpotifyObject {
         return Artist.getArtistNames(mArtists);
     }
 
+    @Override
+    public String toString() {
+        return "Title: " + getAlbumTitle() + "\nArtists: " + getArtistNames();
+    }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import com.palarz.mike.jammyjamz.model.spotify.Album;
 import com.squareup.picasso.Picasso;
 
 public class AlbumAdapter extends PostSearchAdapter<Album> {
+
+    private static final String TAG = AlbumAdapter.class.getSimpleName();
 
     public AlbumAdapter(Context context) {
         super(context);
@@ -46,6 +49,11 @@ public class AlbumAdapter extends PostSearchAdapter<Album> {
                         .error(R.drawable.ic_no_cover)
                         .into(super.mCover);
             }
+        }
+
+        @Override
+        protected void handleOnClick(Album data, Context context) {
+            Log.i(TAG, "Here is the album: " + data.toString());
         }
     }
 

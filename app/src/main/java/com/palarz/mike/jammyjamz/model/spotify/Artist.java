@@ -62,4 +62,8 @@ public class Artist extends SpotifyObject {
         return artistNames;
     }
 
+    @Override
+    public String toString() {
+        return "Name: " + getName();
+    }
 }

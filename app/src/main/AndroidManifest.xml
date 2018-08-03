@@ -27,6 +27,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.palarz.mike.jammyjamz.activity.Newsfeed" />
         </activity>
+        <activity android:name=".activity.WritePost"></activity>
     </application>
 
 </manifest>

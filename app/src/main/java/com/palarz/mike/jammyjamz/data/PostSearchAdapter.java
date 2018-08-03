@@ -66,7 +66,7 @@ public abstract class PostSearchAdapter<T extends SpotifyObject> extends Recycle
     }
 
 
-    protected abstract class PostSearchViewHolder extends RecyclerView.ViewHolder {
+    protected abstract class PostSearchViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         protected final ImageView mCover;
         protected final TextView mTitle;
@@ -78,6 +78,8 @@ public abstract class PostSearchAdapter<T extends SpotifyObject> extends Recycle
             mCover = (ImageView) viewHolder.findViewById(R.id.list_item_search_result_cover);
             mTitle = (TextView) viewHolder.findViewById(R.id.list_item_search_result_title);
             mArtist = (TextView) viewHolder.findViewById(R.id.list_item_search_result_artist);
+
+            viewHolder.setOnClickListener(this);
         }
 
         protected ImageView getCover(){
@@ -94,6 +96,13 @@ public abstract class PostSearchAdapter<T extends SpotifyObject> extends Recycle
 
         protected abstract void bind(T data);
 
+        protected abstract void handleOnClick(T data, Context context);
+
+        @Override
+        public void onClick(View v) {
+            T data = mSearchResults.get(getAdapterPosition());
+            handleOnClick(data, mContext);
+        }
     }
 
 }

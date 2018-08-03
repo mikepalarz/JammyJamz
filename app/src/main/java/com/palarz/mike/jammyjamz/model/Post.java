@@ -1,8 +1,11 @@
 package com.palarz.mike.jammyjamz.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.PropertyName;
 
-public class Post {
+public abstract class Post implements Parcelable {
 
     @PropertyName("title")
     private String mTitle;  // This will be either the name of the track or album
@@ -58,6 +61,10 @@ public class Post {
     public void setUsername(String username) {
         mUsername = username;
     }
+
+    protected abstract void createParcel(Parcel parcel);
+
+    protected abstract Post createPost();
 
 
 }
