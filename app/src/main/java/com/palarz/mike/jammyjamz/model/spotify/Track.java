@@ -75,6 +75,16 @@ public class Track extends SpotifyObject {
 
     @Override
     public String toString() {
-        return "Title: " + getTitle() + "\nAlbum: " + getAlbum().getAlbumTitle() + "\nArtists: " + getArtistNames();
+        return "Title: " + getTitle() + "\tAlbum: " + getAlbum().getAlbumTitle() + "\tArtists: " + getArtistNames();
+    }
+
+    @Override
+    public Post createPost() {
+        Post aPost = new Post();
+        aPost.setTitle(mTitle);
+        aPost.setArtists(getArtistNames());
+        aPost.setPhotoUrl(getAlbum().getLargeAlbumCover());
+
+        return aPost;
     }
 }

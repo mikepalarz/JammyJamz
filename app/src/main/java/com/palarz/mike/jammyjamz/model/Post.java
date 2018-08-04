@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.google.firebase.database.PropertyName;
 
-public abstract class Post implements Parcelable {
+public class Post implements Parcelable {
 
     @PropertyName("title")
     private String mTitle;  // This will be either the name of the track or album
@@ -28,6 +28,13 @@ public abstract class Post implements Parcelable {
         this.mArtists = artist;
         this.mPhotoUrl = photoUrl;
         this.mUsername = username;
+    }
+
+    public Post(Parcel input){
+        mTitle = input.readString();
+        mArtists = input.readString();
+        mPhotoUrl = input.readString();
+        mUsername = input.readString();
     }
 
     public String getTitle() {
@@ -62,9 +69,35 @@ public abstract class Post implements Parcelable {
         mUsername = username;
     }
 
-    protected abstract void createParcel(Parcel parcel);
+    @Override
+    public String toString(){
+        return "Title: " + mTitle + "\tArtists: " + mArtists + "\tPhoto URL: " + mPhotoUrl + "\tUsername: " + mUsername;
+    }
 
-    protected abstract Post createPost();
+    // The following methods are necessary in order to implement the Parcelable interface
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    @Override
+    public void writeToParcel(Parcel destination, int flags) {
+        destination.writeString(mTitle);
+        destination.writeString(mArtists);
+        destination.writeString(mPhotoUrl);
+        destination.writeString(mUsername);
+    }
+
+    public static final Parcelable.Creator<Post> CREATOR = new Parcelable.Creator<Post>(){
+        @Override
+        public Post createFromParcel(Parcel source) {
+            return new Post(source);
+        }
+
+        @Override
+        public Post[] newArray(int size) {
+            return new Post[size];
+        }
+    };
 
 }

@@ -1,6 +1,7 @@
 package com.palarz.mike.jammyjamz.data;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -8,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.palarz.mike.jammyjamz.R;
+import com.palarz.mike.jammyjamz.activity.WritePost;
+import com.palarz.mike.jammyjamz.model.Post;
 import com.palarz.mike.jammyjamz.model.spotify.SpotifyObject;
 
 import java.util.ArrayList;
@@ -96,12 +99,16 @@ public abstract class PostSearchAdapter<T extends SpotifyObject> extends Recycle
 
         protected abstract void bind(T data);
 
-        protected abstract void handleOnClick(T data, Context context);
 
         @Override
         public void onClick(View v) {
             T data = mSearchResults.get(getAdapterPosition());
-            handleOnClick(data, mContext);
+            Post aPost = data.createPost();
+
+            Intent intent = new Intent(mContext, WritePost.class);
+            intent.putExtra(WritePost.EXTRA_CONTENT, aPost);
+
+            mContext.startActivity(intent);
         }
     }
 

@@ -51,10 +51,6 @@ public class ArtistAdapter extends PostSearchAdapter<Artist> {
             }
         }
 
-        @Override
-        protected void handleOnClick(Artist data, Context context) {
-            Log.i(TAG, "Here is the artist: " + data.toString());
-        }
     }
 
 }

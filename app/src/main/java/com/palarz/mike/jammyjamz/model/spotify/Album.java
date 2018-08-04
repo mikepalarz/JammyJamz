@@ -1,6 +1,7 @@
 package com.palarz.mike.jammyjamz.model.spotify;
 
 import com.google.gson.annotations.SerializedName;
+import com.palarz.mike.jammyjamz.model.Post;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,17 @@ public class Album extends SpotifyObject {
 
     @Override
     public String toString() {
-        return "Title: " + getAlbumTitle() + "\nArtists: " + getArtistNames();
+        return "Title: " + getAlbumTitle() + "\tArtists: " + getArtistNames();
     }
+
+    @Override
+    public Post createPost() {
+        Post aPost = new Post();
+        aPost.setTitle(mAlbumTitle);
+        aPost.setArtists(getArtistNames());
+        aPost.setPhotoUrl(getLargeAlbumCover());
+
+        return aPost;
+    }
+
 }

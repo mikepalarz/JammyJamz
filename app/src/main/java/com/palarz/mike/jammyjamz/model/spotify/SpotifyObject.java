@@ -1,8 +1,9 @@
 package com.palarz.mike.jammyjamz.model.spotify;
 
 import com.google.gson.annotations.SerializedName;
+import com.palarz.mike.jammyjamz.model.Post;
 
-public class SpotifyObject {
+public abstract class SpotifyObject {
 
     @SerializedName("href")
     private String mHref;
@@ -16,51 +17,53 @@ public class SpotifyObject {
     @SerializedName("uri")
     private String mUri;
 
-    public SpotifyObject() {
+    protected SpotifyObject() {
         mHref = "";
         mID = "";
         mType = "";
         mUri = "";
     }
 
-    public SpotifyObject(String href, String id, String type, String uri) {
+    protected SpotifyObject(String href, String id, String type, String uri) {
         this.mHref = href;
         this.mID = id;
         this.mType = type;
         this.mUri = uri;
     }
 
-    public String getHref() {
+    protected String getHref() {
         return mHref;
     }
 
-    public void setHref(String mHref) {
+    protected void setHref(String mHref) {
         this.mHref = mHref;
     }
 
-    public String getID() {
+    protected String getID() {
         return mID;
     }
 
-    public void setID(String mID) {
+    protected void setID(String mID) {
         this.mID = mID;
     }
 
-    public String getType() {
+    protected String getType() {
         return mType;
     }
 
-    public void setType(String mType) {
+    protected void setType(String mType) {
         this.mType = mType;
     }
 
-    public String getUri() {
+    protected String getUri() {
         return mUri;
     }
 
-    public void setUri(String mUri) {
+    protected void setUri(String mUri) {
         this.mUri = mUri;
     }
+
+    public abstract Post createPost();
 
 
 }

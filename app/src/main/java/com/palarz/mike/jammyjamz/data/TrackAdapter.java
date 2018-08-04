@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.palarz.mike.jammyjamz.R;
 import com.palarz.mike.jammyjamz.activity.WritePost;
+import com.palarz.mike.jammyjamz.model.Post;
 import com.palarz.mike.jammyjamz.model.spotify.Track;
 import com.squareup.picasso.Picasso;
 
@@ -53,13 +54,6 @@ public class TrackAdapter extends PostSearchAdapter<Track> {
             }
         }
 
-        @Override
-        protected void handleOnClick(Track data, Context context){
-            Log.i(TAG, "Here is the track: " + data.toString());
-
-            Intent intent = new Intent(context, WritePost.class);
-            context.startActivity(intent);
-        }
     }
 
 }

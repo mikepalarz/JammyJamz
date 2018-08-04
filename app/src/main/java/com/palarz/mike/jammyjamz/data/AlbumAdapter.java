@@ -51,10 +51,6 @@ public class AlbumAdapter extends PostSearchAdapter<Album> {
             }
         }
 
-        @Override
-        protected void handleOnClick(Album data, Context context) {
-            Log.i(TAG, "Here is the album: " + data.toString());
-        }
     }
 
 }
