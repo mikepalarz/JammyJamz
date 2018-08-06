@@ -1,6 +1,8 @@
 package com.palarz.mike.jammyjamz.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -39,18 +42,18 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     // activity within onActivityResult(), which is called after the user signs in
     private static final int RC_SIGN_IN = 1;
 
+    // String which is used to identify when this activity receives an instance of Post within an Intent
     public static final String EXTRA_NEW_POST = "com.palarz.mike.jammyjamz.activity.Newsfeed.new_post";
 
     private static final String TAG = Newsfeed.class.getSimpleName();
 
     private static final String USERNAME_ANONYMOUS = "Anonymous";
 
+    private static final String PREFERENCES_KEY_USERNAME = "com.palarz.mike.jammyjamz.activity.Newsfeed.username";
+
     private RecyclerView mRecyclerView;
     private NewsfeedAdapter mAdapter;
 
-    // Only used for very basic testing purposes for now; this should be removed once the search
-    // feature is implemented
-    private List<Post> testPosts = new ArrayList<>();
 
     /*
                                     Firebase member variables
@@ -80,19 +83,14 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Post post = getRandomPost();
-//                post.setUsername(mUsername);
-//                mPostsReference.push().setValue(post);
 
                 PostTypeSelection dialog = new PostTypeSelection();
                 dialog.show(getSupportFragmentManager(), "dialog");
             }
         });
-        // Initialized 4 different Post objects, which are strictly used for testing purposes
-        initializeTestPosts();
 
-        // We'll set mUsername to anonymous until the user signs in
-        mUsername = USERNAME_ANONYMOUS;
+        // We'll set mUsername to the current username, or anonymous if the user isn't yet signed in
+        mUsername = getUsername();
 
         mRecyclerView = (RecyclerView) findViewById(R.id.newsfeed_recyclerview);
         mRecyclerView.setHasFixedSize(true);
@@ -224,25 +222,6 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         }
     }
 
-    private void initializeTestPosts() {
-        Post post1 = new Post(mUsername, "Sweet Child of Mine", "Guns 'n Roses", "https://images-na.ssl-images-amazon.com/images/I/71H9ZR6EGFL._SL1400_.jpg", "Testing, testing, 1, 2, 3");
-        Post post2 = new Post(mUsername, "Alive", "Pearl Jam", "https://images-na.ssl-images-amazon.com/images/I/813p1x7Vc8L._SY355_.jpg", "Testing, testing, 1, 2, 3");
-        Post post3 = new Post(mUsername, "Kickstart My Heart", "Motley Crue", "https://images-na.ssl-images-amazon.com/images/I/717X-fRStVL._SL1036_.jpg", "Testing, testing, 1, 2, 3");
-        Post post4 = new Post(mUsername, "Back in Black", "AC/DC", "https://images-na.ssl-images-amazon.com/images/I/61sJIfuUSiL._SL1500_.jpg", "Testing, testing, 1, 2, 3");
-
-        testPosts.add(post1);
-        testPosts.add(post2);
-        testPosts.add(post3);
-        testPosts.add(post4);
-
-    }
-
-    private Post getRandomPost(){
-        int index = (int)(Math.random() * testPosts.size());
-
-        return testPosts.get(index);
-    }
-
     private void attachedPostsReadListener() {
         // We first check if mPostsListener is null in order to determine if it was previously
         // attached to a database reference
@@ -299,15 +278,27 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     private void onSignedInInitialize(String username) {
         // We extract the username after the user has signed-in to the newsfeed
         mUsername = username;
-        attachedPostsReadListener();
 
+        /*
+        We also save the username to SharedPreferences so that it can later be retrieved. We don't
+        just want to set the username when the user first signs in. The user can also come back to
+        Newsfeed once they enter other activities within the app. Within onCreate() we set the
+        username to anonymous until the user signs in. However, if the user is already signed-in
+        and they come back to Newsfeed, then their username will be set to anonymous. In order to
+        have the username properly set, we will also save it to SharedPreferences and then extract
+        it when appropriate.
+         */
+        SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
+        editor.putString(PREFERENCES_KEY_USERNAME, username);
+        editor.commit();
+
+        attachedPostsReadListener();
     }
 
     private void onSignedOutCleanUp() {
         // This would be a good place to clear the username, if you have need for one
         mAdapter.clearData();
         detachPostsReadListener();
-
     }
 
     @Override
@@ -320,4 +311,15 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
 
         startActivity(intent);
     }
+
+    private String getUsername(){
+        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+        String savedUsername = preferences.getString(PREFERENCES_KEY_USERNAME, "");
+        if (!savedUsername.isEmpty()){
+            return savedUsername;
+        } else {
+            return USERNAME_ANONYMOUS;
+        }
+    }
+
 }
