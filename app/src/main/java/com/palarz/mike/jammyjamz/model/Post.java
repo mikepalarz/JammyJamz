@@ -15,19 +15,23 @@ public class Post implements Parcelable {
     private String mPhotoUrl;
     @PropertyName("userName")
     private String mUsername;
+    @PropertyName("message")
+    private String mMessage;
 
     public Post() {
         this.mTitle = "";
         this.mArtists = "";
         this.mPhotoUrl = "";
         this.mUsername = "";
+        this.mMessage = "";
     }
 
-    public Post(String username, String title, String artist, String photoUrl) {
+    public Post(String username, String title, String artist, String photoUrl, String message) {
         this.mTitle = title;
         this.mArtists = artist;
         this.mPhotoUrl = photoUrl;
         this.mUsername = username;
+        this.mMessage = message;
     }
 
     public Post(Parcel input){
@@ -35,6 +39,7 @@ public class Post implements Parcelable {
         mArtists = input.readString();
         mPhotoUrl = input.readString();
         mUsername = input.readString();
+        mMessage = input.readString();
     }
 
     public String getTitle() {
@@ -69,9 +74,18 @@ public class Post implements Parcelable {
         mUsername = username;
     }
 
+    public String getMessage(){
+        return mMessage;
+    }
+
+    public void setMessage(String message){
+        mMessage = message;
+    }
+
     @Override
     public String toString(){
-        return "Title: " + mTitle + "\tArtists: " + mArtists + "\tPhoto URL: " + mPhotoUrl + "\tUsername: " + mUsername;
+        return "Title: " + mTitle + "\tArtists: " + mArtists + "\tPhoto URL: " + mPhotoUrl
+                + "\tUsername: " + mUsername + "\tMessage: " + mMessage;
     }
 
     // The following methods are necessary in order to implement the Parcelable interface
@@ -86,6 +100,7 @@ public class Post implements Parcelable {
         destination.writeString(mArtists);
         destination.writeString(mPhotoUrl);
         destination.writeString(mUsername);
+        destination.writeString(mMessage);
     }
 
     public static final Parcelable.Creator<Post> CREATOR = new Parcelable.Creator<Post>(){

@@ -18,6 +18,16 @@
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"/>
 
+    <TextView
+        android:id="@+id/list_item_post_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        tools:textSize="16sp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toRightOf="@id/list_item_post_username"
+        tools:text="This is a message within a post" />
+
     <ImageView
         android:id="@+id/list_item_post_artwork"
         android:layout_width="100dp"

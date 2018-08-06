@@ -39,7 +39,7 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     // activity within onActivityResult(), which is called after the user signs in
     private static final int RC_SIGN_IN = 1;
 
-    private static final int RC_NEW_POST = 2;
+    public static final String EXTRA_NEW_POST = "com.palarz.mike.jammyjamz.activity.Newsfeed.new_post";
 
     private static final String TAG = Newsfeed.class.getSimpleName();
 
@@ -136,6 +136,13 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
             }
         };
 
+        Intent receivedIntent = getIntent();
+        if (receivedIntent != null && receivedIntent.hasExtra(EXTRA_NEW_POST)){
+            Post newPost = receivedIntent.getParcelableExtra(EXTRA_NEW_POST);
+            newPost.setUsername(mUsername);
+            mPostsReference.push().setValue(newPost);
+        }
+
     }
 
     @Override
@@ -169,9 +176,6 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
                     Log.e(TAG, "Error occurred during sign-in. Error code: " + response.getError().getErrorCode());
                 }
             }
-        }
-        else if (requestCode == RC_NEW_POST) {
-            Log.i(TAG, "Returning back from PostSearchResultsBackup.");
         }
     }
 
@@ -221,10 +225,10 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     }
 
     private void initializeTestPosts() {
-        Post post1 = new Post(mUsername, "Sweet Child of Mine", "Guns 'n Roses", "https://images-na.ssl-images-amazon.com/images/I/71H9ZR6EGFL._SL1400_.jpg");
-        Post post2 = new Post(mUsername, "Alive", "Pearl Jam", "https://images-na.ssl-images-amazon.com/images/I/813p1x7Vc8L._SY355_.jpg");
-        Post post3 = new Post(mUsername, "Kickstart My Heart", "Motley Crue", "https://images-na.ssl-images-amazon.com/images/I/717X-fRStVL._SL1036_.jpg");
-        Post post4 = new Post(mUsername, "Back in Black", "AC/DC", "https://images-na.ssl-images-amazon.com/images/I/61sJIfuUSiL._SL1500_.jpg");
+        Post post1 = new Post(mUsername, "Sweet Child of Mine", "Guns 'n Roses", "https://images-na.ssl-images-amazon.com/images/I/71H9ZR6EGFL._SL1400_.jpg", "Testing, testing, 1, 2, 3");
+        Post post2 = new Post(mUsername, "Alive", "Pearl Jam", "https://images-na.ssl-images-amazon.com/images/I/813p1x7Vc8L._SY355_.jpg", "Testing, testing, 1, 2, 3");
+        Post post3 = new Post(mUsername, "Kickstart My Heart", "Motley Crue", "https://images-na.ssl-images-amazon.com/images/I/717X-fRStVL._SL1036_.jpg", "Testing, testing, 1, 2, 3");
+        Post post4 = new Post(mUsername, "Back in Black", "AC/DC", "https://images-na.ssl-images-amazon.com/images/I/61sJIfuUSiL._SL1500_.jpg", "Testing, testing, 1, 2, 3");
 
         testPosts.add(post1);
         testPosts.add(post2);
@@ -314,6 +318,6 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         Intent intent = new Intent(this, PostSearch.class);
         intent.putExtra(PostSearch.EXTRA_POST_TYPE, postType);
 
-        startActivityForResult(intent, RC_NEW_POST);
+        startActivity(intent);
     }
 }

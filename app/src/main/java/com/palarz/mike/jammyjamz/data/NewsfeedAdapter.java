@@ -61,6 +61,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
         viewHolder.holderUsername.setText(currentPost.getUsername());
         viewHolder.holderTitle.setText(currentPost.getTitle());
         viewHolder.holderArtist.setText(currentPost.getArtists());
+        viewHolder.holderMessage.setText(currentPost.getMessage());
 
     }
 
@@ -77,6 +78,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
     public class NewsfeedViewHolder extends RecyclerView.ViewHolder {
 
         private TextView holderUsername;
+        private TextView holderMessage;
         private ImageView holderArtwork;
         private TextView holderTitle;
         private TextView holderArtist;
@@ -85,6 +87,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
             super(viewHolder);
 
             holderUsername = (TextView) viewHolder.findViewById(R.id.list_item_post_username);
+            holderMessage = (TextView) viewHolder.findViewById(R.id.list_item_post_message);
             holderArtwork = (ImageView) viewHolder.findViewById(R.id.list_item_post_artwork);
             holderTitle = (TextView) viewHolder.findViewById(R.id.list_item_post_title);
             holderArtist = (TextView) viewHolder.findViewById(R.id.list_item_post_artist);
