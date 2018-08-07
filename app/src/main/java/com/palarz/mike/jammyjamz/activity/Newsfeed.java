@@ -36,6 +36,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * An <code>Activity</code> that displays a newsfeed interface to the end user. It uses the
+ * Firebase Realtime Database to display all of the current posts from all users. It also provides
+ * user authentication via <code>FirebaseUI</code>.
+ *
+ * @author Mike Palarz
+ */
+
 public class Newsfeed extends AppCompatActivity implements PostTypeSelection.PostTypeSelectionListener {
 
     // Request code used within onActivityResult(); this is used to identify the FirebaseUI sign-in
@@ -45,14 +53,21 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     // String which is used to identify when this activity receives an instance of Post within an Intent
     public static final String EXTRA_NEW_POST = "com.palarz.mike.jammyjamz.activity.Newsfeed.new_post";
 
-    private static final String TAG = Newsfeed.class.getSimpleName();
-
-    private static final String USERNAME_ANONYMOUS = "Anonymous";
-
+    // A key which is used to save/retrieve the username that is stored within SharedPreferences
     private static final String PREFERENCES_KEY_USERNAME = "com.palarz.mike.jammyjamz.activity.Newsfeed.username";
 
+    // Tag used for log statements
+    private static final String TAG = Newsfeed.class.getSimpleName();
+
+    // A default username in case the user isn't logged in somehow
+    private static final String USERNAME_ANONYMOUS = "Anonymous";
+
+    // Our RecyclerView and adapter
     private RecyclerView mRecyclerView;
     private NewsfeedAdapter mAdapter;
+
+    // A String used to store the current username
+    private String mUsername;
 
 
     /*
@@ -64,13 +79,11 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     private DatabaseReference mPostsReference;
     // Listens to any posts which have been added to the Realtime Database
     private ChildEventListener mPostsListener;
+    // Our FirebaseAuth instance
     private FirebaseAuth mFirebaseAuth;
     // Listens to any changes in authentication state; i.e., this is a listener which detects when
     // the user is either signed-in or signed-out
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-
-    // A String used to store the current username
-    private String mUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,11 +92,15 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Initialize the FAB and set an OnClickListener
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                /*
+                When the user clicks on the FAB, they are shown a dialog to choose what type of
+                post they'd like to create.
+                 */
                 PostTypeSelection dialog = new PostTypeSelection();
                 dialog.show(getSupportFragmentManager(), "dialog");
             }
@@ -92,12 +109,13 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         // We'll set mUsername to the current username, or anonymous if the user isn't yet signed in
         mUsername = getUsername();
 
+        // Initial setup of the RecyclerView
         mRecyclerView = (RecyclerView) findViewById(R.id.newsfeed_recyclerview);
         mRecyclerView.setHasFixedSize(true);
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
 
+        // Initial setup of the adapter
         mAdapter = new NewsfeedAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -114,13 +132,25 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
                 FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
                 // We determine if the user is authenticated or not by checking if currentUser is null
+
+                // The user is signed in
                 if (currentUser != null) {
-                    // The user is signed in
+                    /*
+                    Do initial setup for when the user signs-in, such as saving the username and
+                    initializing the ChildEventsListener for our Realtime Database
+                     */
                     onSignedInInitialize(currentUser.getDisplayName());
 
-                } else {
-                    // The user is signed out
+                }
+                // The user is signed out
+                else {
+                    /*
+                    We perform necessary clean-up when the user signs out, such as removing all
+                    data within the adapter and detaching the ChildEventsListener from the
+                    Realtime Database.
+                     */
                     onSignedOutCleanUp();
+                    // Once the clean-up is finished, when then prompt the user to sign back in.
                     startActivityForResult(
                             AuthUI.getInstance()
                                     .createSignInIntentBuilder()
@@ -134,6 +164,12 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
             }
         };
 
+        /*
+        One last thing to do here: this activity can be launched from another activity if a new
+        Post is created. For now, WritePost is the only one to do that. If a new Post comes in,
+        then we push it up to the Realtime Database. It will also appear within the RecyclerView
+        since our ChildEventsListener has already been initialized.
+         */
         Intent receivedIntent = getIntent();
         if (receivedIntent != null && receivedIntent.hasExtra(EXTRA_NEW_POST)){
             Post newPost = receivedIntent.getParcelableExtra(EXTRA_NEW_POST);
@@ -152,12 +188,12 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             if (resultCode == RESULT_OK) {
-                Toast.makeText(this, "Wassup, Jammer?", Toast.LENGTH_SHORT).show();
+                Log.i(TAG, "User has signed in successfully.");
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Peace out, homey", Toast.LENGTH_SHORT).show();
                 // If the user canceled the sign-in process (either while in the midst of it or by
                 // pressing the back button once the sign-in UI was shown), then we'll bring them
                 // back to the Newsfeed activity
+                Log.i(TAG, "Sign-in process was canceled.");
                 finish();
             } else {
                 /*
@@ -192,8 +228,12 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
 
         // We first check if mAuthStateListener is null, meaning that is hasn't been previously removed
         if (mAuthStateListener != null) {
-            // We then remove the listener in onPause(). We do that here since onPause() is called
-            // when the app is no longer visible
+            /*
+            We then remove the listener in onPause(). We do that here since onPause() is called
+            when the app is no longer visible. We don't want to do this each time the user signs out
+            and only within onPause() because the app is still potentially visible when the user
+            signs out.
+             */
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
 
@@ -204,7 +244,7 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Nothing overly fancy going on here
         getMenuInflater().inflate(R.menu.menu_newsfeed, menu);
         return true;
     }
@@ -213,7 +253,8 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_action_sign_out:
-                // If the user clicks on the sign-out button within the menu, then we will start the sign-out process
+                // If the user clicks on the sign-out button within the menu, then we will start
+                // the sign-out process
                 AuthUI.getInstance().signOut(this);
                 return true;
 
@@ -222,9 +263,15 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         }
     }
 
+    /**
+     * Attaches our <code>ChildEventListener</code> to our <code>DatabaseReference</code> when necessary.
+     */
     private void attachedPostsReadListener() {
-        // We first check if mPostsListener is null in order to determine if it was previously
-        // attached to a database reference
+        /*
+        We first check if mPostsListener is null in order to determine if it was previously
+        attached to a database reference. If it hasn't yet been attached to a DB reference (that
+        is, it is null), then we will instantiate mPostsListener.
+         */
         if (mPostsListener == null) {
             mPostsListener = new ChildEventListener() {
                 /*
@@ -232,11 +279,12 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
                 UI via the RecyclerView. In order for that to happen, we read from the database via
                 a ChildEventListener.
 
-                onChildAdded() is called when the app is initially launched as well as when each time a
+                onChildAdded() is called when the app is initially launched as well as  each time a
                 new child is added to the database.
                 */
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    // Here, we are simply getting the post and adding it to the adapter
                     Post addedPost = dataSnapshot.getValue(Post.class);
                     mAdapter.addData(addedPost);
                 }
@@ -261,11 +309,14 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
 
                 }
             };
-
+            // Finally, we add the ChildEventListener to mPostsReference
             mPostsReference.addChildEventListener(mPostsListener);
         }
     }
 
+    /**
+     * Detaches our <code>ChildEventListener</code> to our <code>DatabaseReference</code> when necessary.
+     */
     private void detachPostsReadListener() {
         // We first check if mPostsListener is not null in order to ensure that it is already
         // attached to a listener
@@ -275,6 +326,10 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         }
     }
 
+    /**
+     * Performs necessary setup when the user signs in. This includes saving the username and
+     * calling <code>attachedPostsReadListener()</code> if necessary.
+     */
     private void onSignedInInitialize(String username) {
         // We extract the username after the user has signed-in to the newsfeed
         mUsername = username;
@@ -295,12 +350,25 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         attachedPostsReadListener();
     }
 
+    /**
+     * Performs necessary clean-up when the user signs out. This includes clearing out the
+     * adapter for our RecyclerView and calling <code>detachPostsReadListener()</code> if
+     * necessary.
+     */
     private void onSignedOutCleanUp() {
         // This would be a good place to clear the username, if you have need for one
         mAdapter.clearData();
         detachPostsReadListener();
     }
 
+    /**
+     * An overriden method from <code>PostTypeSelection</code> which launches the
+     * <code>PostSearch</code> activity when the user clicks on the OK button within the dialog.
+     * This is a calback method within <code>PostTypeSelection</code>, which allows any activity
+     * to specify what happens when the user clicks on the OK button.
+     *
+     * @param postType An integer which indicates what type of post the user has selected.
+     */
     @Override
     public void onPositiveClick(int postType) {
         // We'll start the song search activity here
@@ -312,6 +380,14 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         startActivity(intent);
     }
 
+    /**
+     * Provides the current username. This is a helper method which provides the current username.
+     * If the username has been previously saved to <code>SharedPreferneces</code>, then
+     * the <code>String</code> is extracted from <code>SharedPreferences</code> and returned.
+     * Otherwise, the returned <code>String</code> is just <code>USERNAME_ANONYMOUS</code>.
+     *
+     * @return The current username.
+     */
     private String getUsername(){
         SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
         String savedUsername = preferences.getString(PREFERENCES_KEY_USERNAME, "");
