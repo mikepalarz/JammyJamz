@@ -17,8 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An adapter for the ListView within PostSearch which displays the results of the
- * search request.
+ * An abstract adapter for PostSearch that is designed to handle Track, Album, and Artist objects.
+ * Many thanks to the following SO post for this implementation:
+ *
+ * https://stackoverflow.com/questions/51460260/recyclerview-adapter-for-multiple-data-types/51460773?noredirect=1#comment89903863_51460773
+ *
  */
 
 public abstract class PostSearchAdapter<T extends SpotifyObject> extends RecyclerView.Adapter<PostSearchAdapter.PostSearchViewHolder> {
@@ -54,6 +57,17 @@ public abstract class PostSearchAdapter<T extends SpotifyObject> extends Recycle
         mSearchResults.clear();
     }
 
+    /**
+     *
+     * @param context The context of the current activity
+     * @param adapterType An integer that determines which subclass of PostSearchadapter will be
+     *                    returned. This variable is dependent on the type of search that is to
+     *                    be performed, so it is ultimately dependent on <code>mSearchType</code>
+     *                    within PostSearch, which subsequently is determined by the type of search
+     *                    the user would like to perform (track, album, or artist).
+     * @return A new PostSearchAdapter subclass that is appropriate for the value of
+     * <code>adapterType</code>.
+     */
     public static PostSearchAdapter create(Context context, int adapterType) {
         switch (adapterType){
             case 0:
@@ -97,6 +111,11 @@ public abstract class PostSearchAdapter<T extends SpotifyObject> extends Recycle
             return mArtist;
         }
 
+        /*
+        We leave it up to a child class to actually implement this method. This is because a child
+        will have different pieces of data from other child classes. Each child class will need to
+        bind their data differently to the views within the ViewHolder.
+         */
         protected abstract void bind(T data);
 
 

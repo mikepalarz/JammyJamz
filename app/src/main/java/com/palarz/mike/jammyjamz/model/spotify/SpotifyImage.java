@@ -51,6 +51,15 @@ class SpotifyImage {
         return mURL;
     }
 
+    /**
+     * Provides the URL to the largest image within <code>images</code>.
+     *
+     * @param images A <code>List</code> of SpotifyImages that is typically part of the JSON
+     *               response from an HTTP request. The first image within the list is also most
+     *               often the largest image.
+     * @return The URL of the largest image within <code>images</code> or an empty String if no
+     * images were found.
+     */
     public static String getLargeImage(List<SpotifyImage> images){
         if ( (images == null) || (images.size() == 0)){
             return "";

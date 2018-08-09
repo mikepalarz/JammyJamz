@@ -72,6 +72,11 @@ public class Album extends SpotifyObject {
         return "Title: " + getAlbumTitle() + "\tArtists: " + getArtistNames();
     }
 
+    /**
+     * Creates a Post from an Album.
+     *
+     * @return A Post which is representative of the Album object.
+     */
     @Override
     public Post createPost() {
         Post aPost = new Post();

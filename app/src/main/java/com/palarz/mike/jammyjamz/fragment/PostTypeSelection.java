@@ -17,9 +17,12 @@ public class PostTypeSelection extends DialogFragment {
         void onPositiveClick(int postType);
     }
 
+    // Stores what type of post the user has selected to make
     private int mPostType;
     private PostTypeSelectionListener mListener;
 
+    // Checking to make sure that the activity which hosts this fragment has implemented the
+    // PostTypeSelectionListener interface
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

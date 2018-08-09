@@ -11,13 +11,6 @@ import java.util.List;
  *
  * https://beta.developer.spotify.com/documentation/web-api/reference/object-model/#track-object-full
  *
- * This class is used in order to parse the data returned by the JSON response in order to obtain
- * the following for a given track:
- *
- * 1. Track title
- * 2. Artist
- * 3. Album cover art (if available)
- *
  */
 
 public class Track extends SpotifyObject {

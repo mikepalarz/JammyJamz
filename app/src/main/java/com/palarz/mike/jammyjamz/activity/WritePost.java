@@ -18,8 +18,10 @@ public class WritePost extends AppCompatActivity {
     private static final String TAG = WritePost.class.getSimpleName();
     public static final String EXTRA_CONTENT = "com.palarz.mike.jammyjamz.activity.WritePost.extra_content";
 
+    // Contains the message that will be added to the post
     private EditText mMessage;
     private ImageButton mSendButton;
+    // Post object that was received from PostSearch
     private Post mPost;
 
     @Override
@@ -32,7 +34,6 @@ public class WritePost extends AppCompatActivity {
         Intent receivedIntent = getIntent();
         if (receivedIntent != null && receivedIntent.hasExtra(EXTRA_CONTENT)){
             mPost = receivedIntent.getParcelableExtra(EXTRA_CONTENT);
-            Log.i(TAG, "Received Post:\n" + mPost.toString());
         }
 
         mSendButton = (ImageButton) findViewById(R.id.write_post_send_button);
@@ -40,8 +41,9 @@ public class WritePost extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String currentMessage = mMessage.getText().toString();
-                Log.i(TAG, "Here is the current message:\n" + currentMessage);
                 mPost.setMessage(currentMessage);
+
+                // Create an intent for Newsfeed with the Post with the added message
                 Intent intent = new Intent(WritePost.this, Newsfeed.class);
                 intent.putExtra(Newsfeed.EXTRA_NEW_POST, mPost);
                 startActivity(intent);

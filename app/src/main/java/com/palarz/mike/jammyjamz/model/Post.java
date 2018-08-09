@@ -5,6 +5,12 @@ import android.os.Parcelable;
 
 import com.google.firebase.database.PropertyName;
 
+/**
+ * A class which represents a post/list item within the Newsfeed activity. It also implements
+ * the Parcelable interface so that Posts can be passed between activities. This becomes especially
+ * useful when we pass a Post object from the WritePost activity to the Newsfeed.
+ */
+
 public class Post implements Parcelable {
 
     @PropertyName("title")
@@ -34,6 +40,7 @@ public class Post implements Parcelable {
         this.mMessage = message;
     }
 
+    // Necessary constructor for the Parcelable interface
     public Post(Parcel input){
         mTitle = input.readString();
         mArtists = input.readString();

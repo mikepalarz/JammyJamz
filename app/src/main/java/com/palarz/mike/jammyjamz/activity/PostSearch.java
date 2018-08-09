@@ -1,6 +1,7 @@
 package com.palarz.mike.jammyjamz.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -34,31 +35,37 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**ACCESS_TOKEN
- * The main activity of the app which allows the end user to search for a song. Once the search
- * request is made, the results are shown within a ListView.
- */
-
 public class PostSearch extends AppCompatActivity {
 
+    // Tag used for debugging
     private static final String TAG = PostSearch.class.getSimpleName();
+
+    // Keys used for SharedPreferences in order to save everything related to the access token
     private static final String PREFERENCES_KEY_TOKEN_RESPONSE_ACCESS_TOKEN = "com.palarz.mike.jammyjamz.access_token";
     private static final String PREFERENCES_KEY_TOKEN_RESPONSE_TOKEN_TYPE = "com.palarz.mike.jammyjamz.token_type";
     private static final String PREFERENCES_KEY_TOKEN_RESPONSE_EXPIRATION = "com.palarz.mike.jammyjamz.expiration";
     private static final String PREFERENCES_KEY_TOKEN_RESPONSE_TIME_SAVED = "com.palarz.mike.jammyjamz.time_saved";
 
-    public static final String EXTRA_POST_TYPE = "post_type";
+    // An extra for the value of mSearchType
+    public static final String EXTRA_SEARCH_TYPE = "post_type";
+
+    // TODO: I really, really need to figure out a better way to hide these...
+    // See here for some better ideas on how to hide these:
+    // https://stackoverflow.com/questions/44396499/android-best-way-to-hide-api-clientid-clientsecret
 
     // Client ID and secret that are used to obtain the access token to the Spotify Web API
-    // TODO: I really, really need to figure out a better way to hide these...
     private static final String CLIENT_ID = "e31c0e021bb24dbcb39717172c68dd98";
     private static final String CLIENT_SECRET = "788b8ae21bb644c9a660c613cc912000";
 
-    private RecyclerView mSeachResults; // Contains the results of the search request
+    // Contains the results of the search request
+    private RecyclerView mSeachResults;
     private PostSearchAdapter mAdapter;
-    private SearchClient mClient; // Instance of SearchClient which is used to perform all HTTP requests
+    // Instance of SearchClient which is used to perform all HTTP requests
+    private SearchClient mClient;
     private ProgressBar mProgressBar;
-    private String mAccessToken;    // Stores the access token obtained through retrieveAccessToken()
+    // Stores the access token obtained through retrieveAccessToken()
+    private String mAccessToken;
+    // An integer which determines the type of search that will be performed: tracks (= 0), albums (= 1), or artists (= 2)
     private int mSearchType;
 
     @Override
@@ -66,8 +73,17 @@ public class PostSearch extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_search);
 
-        mSearchType = getIntent().getIntExtra(EXTRA_POST_TYPE, 0);
-        Log.i(TAG, "Search type: " + mSearchType);
+        /*
+        We attempt to extract mSearchType from the received intent
+         */
+        Intent receivedIntent = getIntent();
+        if (receivedIntent != null && receivedIntent.hasExtra(EXTRA_SEARCH_TYPE)){
+            mSearchType = receivedIntent.getIntExtra(EXTRA_SEARCH_TYPE, 0);
+        } else {
+            mSearchType = 0;
+            Log.e(TAG, "No extra attached to received intent, all search requests will be for tracks");
+        }
+
 
         mSeachResults = (RecyclerView) findViewById(R.id.post_search_recyclerview);
         mSeachResults.setHasFixedSize(true);
@@ -80,7 +96,7 @@ public class PostSearch extends AppCompatActivity {
 
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
-
+        // We get the access token. If it's expired, then we will retrieve a new access token.
         mAccessToken = getAccessToken();
 
         // If the access token is expired, then we will attempt to retrieve a new one
@@ -90,7 +106,8 @@ public class PostSearch extends AppCompatActivity {
     }
 
     /**
-     * Retrieves the access token that is used for subsequent search requests
+     * Retrieves the access token that is used for subsequent search requests. This is done
+     * according to the Client Credentials Flow from the OAuth2 framework.
      */
     private void retrieveAccessToken() {
 
@@ -105,13 +122,13 @@ public class PostSearch extends AppCompatActivity {
         tokenResponseCall.enqueue(new Callback<TokenResponse>() {
             @Override
             public void onResponse(Call<TokenResponse> call, Response<TokenResponse> response) {
-                Log.d(TAG, "on Response: response toString(): " + response.toString());
+                Log.d(TAG, "onResponse(): response toString(): " + response.toString());
                 TokenResponse tokenResponse = null;
                 if (response.isSuccessful()) {
                     tokenResponse = response.body();
                     Log.d(TAG, tokenResponse.toString());
                     mAccessToken = tokenResponse.getAccessToken();
-                    saveAccessToken(tokenResponse);
+                    saveTokenResponse(tokenResponse);
                 }
             }
 
@@ -135,7 +152,7 @@ public class PostSearch extends AppCompatActivity {
      *          according to the Spotify API.
      */
     private String encodeClientIDAndSecret(){
-        String basic = "Basic ";
+        final String BASIC = "Basic ";
         String clientIDAndSecret = CLIENT_ID + ":" + CLIENT_SECRET;
         /*
         I use the NO_WRAP flag so that the encoded String is contained within a single line.
@@ -146,10 +163,18 @@ public class PostSearch extends AppCompatActivity {
         String encodedString = new String(encodedValue);
 
         // The final output needs to have both the encoded String as well as 'Basic ' prepended to it
-        return basic + encodedString;
+        return BASIC + encodedString;
     }
 
-    private void saveAccessToken(TokenResponse tokenResponse){
+    /**
+     * Saves all useful information from a <code>TokenResponse</code> into SharedPreferences.
+     * Parts of the <code>TokenResponse</code> that are saved include the access token and the
+     * expiration of the access token.
+     *
+     * @param tokenResponse A <code>TokenResponse</code> that is ideally retrieved on a successful
+     *                      HTTP request for the access token.
+     */
+    private void saveTokenResponse(TokenResponse tokenResponse){
         /*
         We're using getPreferences() here instead of getSharedPreferences() since getPreferences()
         provides us with the default SharedPreferences for the current activity. If we used
@@ -167,6 +192,12 @@ public class PostSearch extends AppCompatActivity {
 
     }
 
+    /**
+     * Determines if the access token is expired or not.
+     *
+     * @return <code>true</code> if <code>mAccessToken</code> is expired, <code>false</code>
+     * otherwise.
+     */
     private boolean accessTokenExpired() {
         // If mAccessToken hasn't yet been initialized, that means that we need to try to retrieve
         // an access token. In this case, we will return true;
@@ -174,9 +205,12 @@ public class PostSearch extends AppCompatActivity {
             return true;
         }
 
+        // Otherwise, we will read from SharedPreferences to determine if the access token is expired or not
         SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
         long timeSaved = preferences.getLong(PREFERENCES_KEY_TOKEN_RESPONSE_TIME_SAVED, 0L);
         long expiration = preferences.getLong(PREFERENCES_KEY_TOKEN_RESPONSE_EXPIRATION, 0L);
+
+        // Determining how much time has passed since we saved the access token
         long now = System.currentTimeMillis()/1000;
         long timePassed = Math.abs(now - timeSaved);
 
@@ -187,15 +221,20 @@ public class PostSearch extends AppCompatActivity {
         }
     }
 
+    /**
+     * A helper method to get the value of the access token from SharedPreferences.
+     *
+     * @return The current value of the access token that was saved to SharedPreferences.
+     */
     private String getAccessToken() {
         SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
         return preferences.getString(PREFERENCES_KEY_TOKEN_RESPONSE_ACCESS_TOKEN, "");
     }
 
     /**
-     * Actually performs the search request. If the search was successful, then the ListView's
-     * adapter is cleared so that previous search results are no longer shown. Then, the
-     * new search results are presented to the user.
+     * Searches for tracks based on the user's query. An HTTP request is sent. If a successful
+     * response is received, then the current contents of <code>mSearchResults</code> is cleared
+     * and the new search results are added to the adapter.
      *
      * @param query The query that the user entered into the SearchView.
      */
@@ -203,19 +242,8 @@ public class PostSearch extends AppCompatActivity {
         // We show the ProgressBar to the user so that they're aware that the HTTP request is being made
         mProgressBar.setVisibility(ProgressBar.VISIBLE);
 
-        // We also need to change the base URL of the SearchClient since it was previously set to
-        // the one that is used for the access token
-        ClientGenerator.changeBaseURL(SearchClient.BASE_URL_SEARCH);
-
-        // Finally, we obtain a new instance of the SearchClient with the appropriate base URL
-        mClient = ClientGenerator.createClient(SearchClient.class);
-
-        // If we didn't obtain an access token, then we simply stop performing the search
-        if (TextUtils.isEmpty(mAccessToken)) {
-            // We also want to be sure that we no longer show the ProgressBar
-            mProgressBar.setVisibility(ProgressBar.GONE);
-            return;
-        }
+        // Prepare mClient and mAccessToken for a search
+        prepareForSearch();
 
         // Finally, we create our call object and initiate the HTTP request.
         Call<RootJSONResponse> call = mClient.searchForTrack("Bearer " + mAccessToken, query);
@@ -250,23 +278,19 @@ public class PostSearch extends AppCompatActivity {
         });
     }
 
+    /**
+     * Searches for albums based on the user's query. An HTTP request is sent. If a successful
+     * response is received, then the current contents of <code>mSearchResults</code> is cleared
+     * and the new search results are added to the adapter.
+     *
+     * @param query The query that the user entered into the SearchView.
+     */
     private void fetchAlbums(String query) {
         // We show the ProgressBar to the user so that they're aware that the HTTP request is being made
         mProgressBar.setVisibility(ProgressBar.VISIBLE);
 
-        // We also need to change the base URL of the SearchClient since it was previously set to
-        // the one that is used for the access token
-        ClientGenerator.changeBaseURL(SearchClient.BASE_URL_SEARCH);
-
-        // Finally, we obtain a new instance of the SearchClient with the appropriate base URL
-        mClient = ClientGenerator.createClient(SearchClient.class);
-
-        // If we didn't obtain an access token, then we simply stop performing the search
-        if (TextUtils.isEmpty(mAccessToken)) {
-            // We also want to be sure that we no longer show the ProgressBar
-            mProgressBar.setVisibility(ProgressBar.GONE);
-            return;
-        }
+        // Prepare mClient and mAccessToken for a search
+        prepareForSearch();
 
         // Finally, we create our call object and initiate the HTTP request.
         Call<RootJSONResponse> call = mClient.searchForAlbum("Bearer " + mAccessToken, query);
@@ -301,23 +325,19 @@ public class PostSearch extends AppCompatActivity {
         });
     }
 
+    /**
+     * Searches for artists based on the user's query. An HTTP request is sent. If a successful
+     * response is received, then the current contents of <code>mSearchResults</code> is cleared
+     * and the new search results are added to the adapter.
+     *
+     * @param query The query that the user entered into the SearchView.
+     */
     private void fetchArtists(String query) {
         // We show the ProgressBar to the user so that they're aware that the HTTP request is being made
         mProgressBar.setVisibility(ProgressBar.VISIBLE);
 
-        // We also need to change the base URL of the SearchClient since it was previously set to
-        // the one that is used for the access token
-        ClientGenerator.changeBaseURL(SearchClient.BASE_URL_SEARCH);
-
-        // Finally, we obtain a new instance of the SearchClient with the appropriate base URL
-        mClient = ClientGenerator.createClient(SearchClient.class);
-
-        // If we didn't obtain an access token, then we simply stop performing the search
-        if (TextUtils.isEmpty(mAccessToken)) {
-            // We also want to be sure that we no longer show the ProgressBar
-            mProgressBar.setVisibility(ProgressBar.GONE);
-            return;
-        }
+        // Prepare mClient and mAccessToken for a search
+        prepareForSearch();
 
         // Finally, we create our call object and initiate the HTTP request.
         Call<RootJSONResponse> call = mClient.searchForArtist("Bearer " + mAccessToken, query);
@@ -356,14 +376,14 @@ public class PostSearch extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_post_search, menu);
         final MenuItem searchItem = menu.findItem(R.id.action_search);
+        // TODO: Update all of this to the latest SearchView best practices
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
-        // We set an OnQueryTextListener to the SearchView so that fetchTracks() is fired each time
-        // a search request is made
+        // We set an OnQueryTextListener to the SearchView
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                // Fetch the remote data
+                // Depending on the value of mSearchType, a different type of search will be performed
                 switch (mSearchType){
                     case 0:
                         fetchTracks(query);
@@ -396,4 +416,27 @@ public class PostSearch extends AppCompatActivity {
 
         return true;
     }
+
+    /**
+     * Prepares several member variables for a search to be performed. In particular, it
+     * changes the base URL of our search client to the URL that should be used for searches. In
+     * addition, it checks if the access token is expired. If it is, then a new access token will
+     * be retrieved.
+     */
+    private void prepareForSearch(){
+
+        // Set the base URL to the search URL
+        ClientGenerator.changeBaseURL(SearchClient.BASE_URL_SEARCH);
+
+        // We obtain a new instance of the SearchClient with the appropriate base URL
+        mClient = ClientGenerator.createClient(SearchClient.class);
+
+        // Make sure that mAccessToken is using the most recent token that we have
+        mAccessToken = getAccessToken();
+        boolean hasExpired = accessTokenExpired();
+        if (mAccessToken.isEmpty() || hasExpired){
+            retrieveAccessToken();
+        }
+    }
+
 }

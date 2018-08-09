@@ -31,11 +31,11 @@ public interface SearchClient {
     @GET("v1/search?type=track&market=US")
     Call<RootJSONResponse> searchForTrack(@Header("Authorization") String accessToken, @Query("q") String query);
 
-    // HTTP request used to search for an individual track
+    // HTTP request used to search for an individual album
     @GET("v1/search?type=album&market=US")
     Call<RootJSONResponse> searchForAlbum(@Header("Authorization") String accessToken, @Query("q") String query);
 
-    // HTTP request used to search for an individual track
+    // HTTP request used to search for an individual artist
     @GET("v1/search?type=artist&market=US")
     Call<RootJSONResponse> searchForArtist(@Header("Authorization") String accessToken, @Query("q") String query);
 

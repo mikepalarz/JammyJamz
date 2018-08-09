@@ -13,6 +13,10 @@ import com.palarz.mike.jammyjamz.R;
 import com.palarz.mike.jammyjamz.model.spotify.Album;
 import com.squareup.picasso.Picasso;
 
+/**
+ * A subclass of PostSearchAdapter that is appropriate for Album objects.
+ */
+
 public class AlbumAdapter extends PostSearchAdapter<Album> {
 
     private static final String TAG = AlbumAdapter.class.getSimpleName();
@@ -46,7 +50,7 @@ public class AlbumAdapter extends PostSearchAdapter<Album> {
             if (!TextUtils.isEmpty(data.getLargeAlbumCover())) {
                 Picasso.get()
                         .load(Uri.parse(data.getLargeAlbumCover()))
-                        .error(R.drawable.ic_no_cover)
+                        .error(R.drawable.ic_error)
                         .into(super.mCover);
             }
         }

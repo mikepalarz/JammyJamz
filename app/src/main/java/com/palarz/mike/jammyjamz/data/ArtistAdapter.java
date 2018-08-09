@@ -13,6 +13,10 @@ import com.palarz.mike.jammyjamz.R;
 import com.palarz.mike.jammyjamz.model.spotify.Artist;
 import com.squareup.picasso.Picasso;
 
+/**
+ * A subclass of PostSearchAdapter that is appropriate for Artist objects.
+ */
+
 public class ArtistAdapter extends PostSearchAdapter<Artist> {
 
     private static final String TAG = ArtistAdapter.class.getSimpleName();
@@ -46,7 +50,7 @@ public class ArtistAdapter extends PostSearchAdapter<Artist> {
             if (!TextUtils.isEmpty(data.getLargeImage())){
                 Picasso.get()
                         .load(Uri.parse(data.getLargeImage()))
-                        .error(R.drawable.ic_no_cover)
+                        .error(R.drawable.ic_error)
                         .into(super.mCover);
             }
         }

@@ -52,9 +52,8 @@ public class TokenResponse {
 
 
     public String toString(){
-        return "Access token: " + this.getAccessToken()
-                + "\nToken type: " + this.getTokenType()
-                + "\nExpiration: " + this.getExpiration();
+        return "Access token: " + this.getAccessToken() + "\tToken type: " + this.getTokenType()
+                + "\tExpiration: " + this.getExpiration();
     }
 
 }

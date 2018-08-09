@@ -16,6 +16,11 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The adapter for the Newsfeed activity. This adapter displays all of the current Post objects
+ * that are stored within the Realtime Database.
+ */
+
 public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.NewsfeedViewHolder> {
 
     private List<Post> mPosts;
@@ -49,19 +54,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
     @Override
     public void onBindViewHolder(NewsfeedViewHolder viewHolder, int position) {
         Post currentPost = mPosts.get(position);
-
-        if (currentPost.getPhotoUrl() != null) {
-            // We will attempt to download the image
-            // TODO: Add a placeholder and an error image
-            Picasso.get()
-                    .load(currentPost.getPhotoUrl())
-                    .into(viewHolder.holderArtwork);
-        }
-
-        viewHolder.holderUsername.setText(currentPost.getUsername());
-        viewHolder.holderTitle.setText(currentPost.getTitle());
-        viewHolder.holderArtist.setText(currentPost.getArtists());
-        viewHolder.holderMessage.setText(currentPost.getMessage());
+        viewHolder.bind(currentPost);
 
     }
 
@@ -92,5 +85,22 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
             holderTitle = (TextView) viewHolder.findViewById(R.id.list_item_post_title);
             holderArtist = (TextView) viewHolder.findViewById(R.id.list_item_post_artist);
         }
+
+        public void bind(Post currentPost){
+            if (currentPost.getPhotoUrl() != null) {
+                // We will attempt to download the image
+                Picasso.get()
+                        .load(currentPost.getPhotoUrl())
+                        .placeholder(R.drawable.ic_artwork_placeholder)
+                        .error(R.drawable.ic_error)
+                        .into(holderArtwork);
+            }
+
+            holderUsername.setText(currentPost.getUsername());
+            holderTitle.setText(currentPost.getTitle());
+            holderArtist.setText(currentPost.getArtists());
+            holderMessage.setText(currentPost.getMessage());
+        }
+
     }
 }

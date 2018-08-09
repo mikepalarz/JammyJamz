@@ -16,9 +16,11 @@ import com.palarz.mike.jammyjamz.model.Post;
 import com.palarz.mike.jammyjamz.model.spotify.Track;
 import com.squareup.picasso.Picasso;
 
-public class TrackAdapter extends PostSearchAdapter<Track> {
+/**
+ * A subclass of PostSearchAdapter that is appropriate for Track objects.
+ */
 
-    private static final String TAG = TrackAdapter.class.getSimpleName();
+public class TrackAdapter extends PostSearchAdapter<Track> {
 
     public TrackAdapter(Context context){
         super(context);
@@ -49,7 +51,7 @@ public class TrackAdapter extends PostSearchAdapter<Track> {
             if (!TextUtils.isEmpty(data.getAlbum().getLargeAlbumCover())) {
                 Picasso.get()
                         .load(Uri.parse(data.getAlbum().getLargeAlbumCover()))
-                        .error(R.drawable.ic_no_cover)
+                        .error(R.drawable.ic_error)
                         .into(super.mCover);
             }
         }

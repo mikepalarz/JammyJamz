@@ -11,8 +11,6 @@ import java.util.List;
  *
  * https://beta.developer.spotify.com/documentation/web-api/reference/object-model/#artist-object-full
  *
- * This class is used in order to provide a String of artists for each track when the search
- * results are displayed to the user.
  */
 
 public class Artist extends SpotifyObject {
@@ -49,6 +47,12 @@ public class Artist extends SpotifyObject {
         return SpotifyImage.getLargeImage(mImages);
     }
 
+    /**
+     * Creates a comma-separated String of artist names.
+     *
+     * @param artists A <code>List</code> of Artist objects.
+     * @return A comma-separated String of artist names.
+     */
     public static String getArtistNames(List<Artist> artists){
         if (artists == null || artists.size() == 0) {
             return "";
@@ -68,6 +72,11 @@ public class Artist extends SpotifyObject {
         return "Name: " + getName();
     }
 
+    /**
+     * Creates a Post from an Artist.
+     *
+     * @return A Post which is representative of the Artist object.
+     */
     @Override
     public Post createPost() {
         Post aPost = new Post();

@@ -21,12 +21,9 @@ import com.google.gson.annotations.SerializedName;
  * objects and likewise for the "artists" paging object. For this reason, a PagingTracks subclass
  * has been made so that the "items" key is handled appropriately for track objects.
  *
- * For the time being, search requests are only being made for track objects. However, in
- * the future, artists requests will also be made. In that case, an ArtistsPaging class will
- * also be created.
- *
  * Even if multiple types aren't specified in the query of the HTTP request, the "items" key will
- * contain different data depending on what was specified in the type query.
+ * contain different data depending on what was specified in the type query. Therefore, different
+ * subclasses needed to be implemented in order to appropriately handle the different data types.
  */
 
 public class Paging {

@@ -15,8 +15,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.animation.AnticipateOvershootInterpolator;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -32,9 +30,7 @@ import com.palarz.mike.jammyjamz.fragment.PostTypeSelection;
 import com.palarz.mike.jammyjamz.R;
 import com.palarz.mike.jammyjamz.model.Post;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * An <code>Activity</code> that displays a newsfeed interface to the end user. It uses the
@@ -375,7 +371,7 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         Log.i(TAG, "Ok button clicked within dialog");
 
         Intent intent = new Intent(this, PostSearch.class);
-        intent.putExtra(PostSearch.EXTRA_POST_TYPE, postType);
+        intent.putExtra(PostSearch.EXTRA_SEARCH_TYPE, postType);
 
         startActivity(intent);
     }
