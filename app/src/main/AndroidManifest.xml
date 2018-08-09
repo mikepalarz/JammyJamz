@@ -21,13 +21,20 @@
         </activity>
         <activity
             android:name=".activity.PostSearch"
-            android:label="@string/title_activity_post_search_results"
+            android:label="@string/activity_label_post_search"
             android:parentActivityName=".activity.Newsfeed">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.palarz.mike.jammyjamz.activity.Newsfeed" />
         </activity>
-        <activity android:name=".activity.WritePost"></activity>
+        <activity
+            android:name=".activity.WritePost"
+            android:label="@string/activity_label_write_post"
+            android:parentActivityName=".activity.PostSearch">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.palarz.mike.jammyjamz.activity.PostSearch" />
+        </activity>
     </application>
 
 </manifest>

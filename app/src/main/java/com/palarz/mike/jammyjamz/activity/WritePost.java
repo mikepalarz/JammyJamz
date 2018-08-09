@@ -15,6 +15,8 @@ import com.palarz.mike.jammyjamz.model.Post;
 
 public class WritePost extends AppCompatActivity {
 
+    // TODO: Need to add a menu with the sign-out option
+
     private static final String TAG = WritePost.class.getSimpleName();
     public static final String EXTRA_CONTENT = "com.palarz.mike.jammyjamz.activity.WritePost.extra_content";
 

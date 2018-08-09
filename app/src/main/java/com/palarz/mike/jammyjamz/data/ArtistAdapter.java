@@ -46,6 +46,12 @@ public class ArtistAdapter extends PostSearchAdapter<Artist> {
         @Override
         protected void bind(Artist data){
             super.mTitle.setText(data.getName());
+            /*
+            We're setting the artist of the ViewHolder to a blank String since we already have the
+            title of the ViewHolder set to the artist name (and we don't really have any other
+            data to display within the ViewHolder, other than the artist name).
+             */
+            super.mArtist.setText("");
 
             if (!TextUtils.isEmpty(data.getLargeImage())){
                 Picasso.get()

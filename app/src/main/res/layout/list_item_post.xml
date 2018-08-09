@@ -10,8 +10,8 @@
         android:id="@+id/list_item_post_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Anonymous"
-        tools:text="Mike Palarz"
+        android:text="@string/list_item_post_username_default"
+        tools:text="@string/list_item_post_username_testing"
         android:textSize="16sp"
         tools:textSize="16sp"
         android:layout_marginStart="8dp"
@@ -26,7 +26,7 @@
         tools:textSize="16sp"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toRightOf="@id/list_item_post_username"
-        tools:text="This is a message within a post" />
+        tools:text="@string/list_item_post_message_testing" />
 
     <ImageView
         android:id="@+id/list_item_post_artwork"
@@ -49,7 +49,7 @@
         android:textSize="24sp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/list_item_post_artwork"
-        tools:text="Hello, world!"
+        tools:text="@string/list_item_post_title_testing"
         tools:textSize="24sp" />
 
     <TextView
@@ -61,7 +61,7 @@
         android:textSize="16sp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/list_item_post_title"
-        tools:text="Why, hello to you too!"
+        tools:text="@string/list_item_post_artist_testing"
         tools:textSize="16sp" />
 
 </android.support.constraint.ConstraintLayout>

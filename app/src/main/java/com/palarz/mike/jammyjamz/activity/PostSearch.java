@@ -37,6 +37,8 @@ import retrofit2.Response;
 
 public class PostSearch extends AppCompatActivity {
 
+    // TODO: Need to add a menu with the sign-out option
+
     // Tag used for debugging
     private static final String TAG = PostSearch.class.getSimpleName();
 
