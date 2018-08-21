@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -75,6 +75,9 @@ public class PostSearch extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_search);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.post_search_toolbar);
+        setSupportActionBar(toolbar);
+
         /*
         We attempt to extract mSearchType from the received intent
          */
@@ -96,7 +99,7 @@ public class PostSearch extends AppCompatActivity {
         mAdapter = PostSearchAdapter.create(this, mSearchType);
         mSeachResults.setAdapter(mAdapter);
 
-        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        mProgressBar = (ProgressBar) findViewById(R.id.post_search_progress_bar);
 
         // We get the access token. If it's expired, then we will retrieve a new access token.
         mAccessToken = getAccessToken();

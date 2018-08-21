@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--TODO: Change this to a CardView-->
+<!--TODO: Think about adjusting the background color of the CardView as well in some way-->
+    <!--Some ideas for that:-->
+        <!--1. Perhaps use different colors for each post type (track, album, artist)-->
+        <!--2. Adjust the background color according to the image in the post use the Palette class-->
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"

@@ -85,7 +85,8 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newsfeed);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.newsfeed_toolbar);
         setSupportActionBar(toolbar);
 
         // Initialize the FAB and set an OnClickListener
