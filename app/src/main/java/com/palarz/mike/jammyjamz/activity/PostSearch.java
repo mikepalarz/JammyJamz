@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.support.v7.widget.SearchView;
 import android.widget.ProgressBar;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.auth.FirebaseAuth;
 import com.palarz.mike.jammyjamz.networking.ClientGenerator;
 import com.palarz.mike.jammyjamz.data.PostSearchAdapter;
 import com.palarz.mike.jammyjamz.R;
@@ -36,8 +38,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PostSearch extends AppCompatActivity {
-
-    // TODO: Need to add a menu with the sign-out option
 
     // Tag used for debugging
     private static final String TAG = PostSearch.class.getSimpleName();
@@ -70,6 +70,8 @@ public class PostSearch extends AppCompatActivity {
     // An integer which determines the type of search that will be performed: tracks (= 0), albums (= 1), or artists (= 2)
     private int mSearchType;
 
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +90,8 @@ public class PostSearch extends AppCompatActivity {
             mSearchType = 0;
             Log.e(TAG, "No extra attached to received intent, all search requests will be for tracks");
         }
+
+        mAuth = FirebaseAuth.getInstance();
 
 
         mSeachResults = (RecyclerView) findViewById(R.id.post_search_recyclerview);
@@ -380,7 +384,7 @@ public class PostSearch extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_post_search, menu);
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        final MenuItem searchItem = menu.findItem(R.id.write_post_menu_action_search);
         // TODO: Update all of this to the latest SearchView best practices
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
@@ -420,6 +424,21 @@ public class PostSearch extends AppCompatActivity {
         });
 
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.newsfeed_menu_action_sign_out:
+                // TODO: This isn't the best solution... Think of something better
+                AuthUI.getInstance().signOut(this);
+                Intent intent = new Intent(this, Newsfeed.class);
+                startActivity(intent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**

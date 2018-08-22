@@ -4,19 +4,17 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.firebase.ui.auth.AuthUI;
 import com.palarz.mike.jammyjamz.R;
 import com.palarz.mike.jammyjamz.model.Post;
 
 public class WritePost extends AppCompatActivity {
-
-    // TODO: Need to add a menu with the sign-out option
 
     private static final String TAG = WritePost.class.getSimpleName();
     public static final String EXTRA_CONTENT = "com.palarz.mike.jammyjamz.activity.WritePost.extra_content";
@@ -56,5 +54,27 @@ public class WritePost extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_write_post, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+
+            case R.id.newsfeed_menu_action_sign_out:
+                // TODO: Not the most elegant solution, try to think of something better
+                AuthUI.getInstance().signOut(this);
+                Intent intent = new Intent(this, Newsfeed.class);
+                startActivity(intent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
