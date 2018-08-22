@@ -3,6 +3,7 @@ package com.palarz.mike.jammyjamz.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,8 @@ import android.support.v7.widget.SearchView;
 import android.widget.ProgressBar;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.palarz.mike.jammyjamz.networking.ClientGenerator;
 import com.palarz.mike.jammyjamz.data.PostSearchAdapter;
@@ -70,8 +73,6 @@ public class PostSearch extends AppCompatActivity {
     // An integer which determines the type of search that will be performed: tracks (= 0), albums (= 1), or artists (= 2)
     private int mSearchType;
 
-    private FirebaseAuth mAuth;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,9 +91,6 @@ public class PostSearch extends AppCompatActivity {
             mSearchType = 0;
             Log.e(TAG, "No extra attached to received intent, all search requests will be for tracks");
         }
-
-        mAuth = FirebaseAuth.getInstance();
-
 
         mSeachResults = (RecyclerView) findViewById(R.id.post_search_recyclerview);
         mSeachResults.setHasFixedSize(true);
@@ -430,10 +428,15 @@ public class PostSearch extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.newsfeed_menu_action_sign_out:
-                // TODO: This isn't the best solution... Think of something better
-                AuthUI.getInstance().signOut(this);
-                Intent intent = new Intent(this, Newsfeed.class);
-                startActivity(intent);
+                AuthUI.getInstance()
+                        .signOut(this)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                startActivity(new Intent(PostSearch.this, Newsfeed.class));
+                                finish();
+                            }
+                        });
                 return true;
 
             default:

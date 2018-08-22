@@ -1,6 +1,7 @@
 package com.palarz.mike.jammyjamz.activity;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +12,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.palarz.mike.jammyjamz.R;
 import com.palarz.mike.jammyjamz.model.Post;
 
@@ -68,9 +71,14 @@ public class WritePost extends AppCompatActivity {
 
             case R.id.newsfeed_menu_action_sign_out:
                 // TODO: Not the most elegant solution, try to think of something better
-                AuthUI.getInstance().signOut(this);
-                Intent intent = new Intent(this, Newsfeed.class);
-                startActivity(intent);
+                AuthUI.getInstance()
+                        .signOut(this)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                startActivity(new Intent(WritePost.this, Newsfeed.class));
+                            }
+                        });
                 return true;
 
             default:
