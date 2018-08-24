@@ -39,6 +39,9 @@ dependencies {
     // Retrofit dependency
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+
+    // Palette dependency
+    implementation 'com.android.support:palette-v7:27.1.1'
 }
 // Necessary to use the Google services plugin for the google-services.json file
 apply plugin: 'com.google.gms.google-services'

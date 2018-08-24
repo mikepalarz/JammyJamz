@@ -1,72 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--TODO: Change this to a CardView-->
-<!--TODO: Think about adjusting the background color of the CardView as well in some way-->
-    <!--Some ideas for that:-->
-        <!--1. Perhaps use different colors for each post type (track, album, artist)-->
-        <!--2. Adjust the background color according to the image in the post use the Palette class-->
-<android.support.constraint.ConstraintLayout
+<android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/base_size"
+    android:layout_marginLeft="@dimen/base_size"
+    android:layout_marginRight="@dimen/base_size"
+    android:translationZ="@dimen/list_item_post_cardview_translation"
+    app:cardElevation="@dimen/list_item_post_cardview_elevation">
 
-    <TextView
-        android:id="@+id/list_item_post_username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/list_item_post_username_default"
-        tools:text="@string/list_item_post_username_testing"
-        android:textSize="16sp"
-        tools:textSize="16sp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/list_item_post_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        tools:textSize="16sp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toRightOf="@id/list_item_post_username"
-        tools:text="@string/list_item_post_message_testing" />
+        <View
+            android:id="@+id/list_item_post_username_background"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginTop="@dimen/base_size"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@android:color/white" />
 
-    <ImageView
-        android:id="@+id/list_item_post_artwork"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/ic_artwork_placeholder"
-        android:scaleType="centerCrop"
-        tools:src="@drawable/ic_artwork_placeholder"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/list_item_post_username"/>
+        <ImageView
+            android:id="@+id/list_item_post_profile_pic"
+            android:layout_width="@dimen/list_item_post_profile_pic_size"
+            android:layout_height="@dimen/list_item_post_profile_pic_size"
+            android:layout_marginLeft="@dimen/base_size"
+            android:layout_marginStart="@dimen/base_size"
+            android:layout_marginTop="@dimen/base_size"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_profile_pic_placeholder" />
 
-    <TextView
-        android:id="@+id/list_item_post_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
-        android:textSize="24sp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/list_item_post_artwork"
-        tools:text="@string/list_item_post_title_testing"
-        tools:textSize="24sp" />
+        <TextView
+            android:id="@+id/list_item_post_username"
+            style="@style/TextAppearance.AppCompat.Body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/base_size"
+            android:layout_marginStart="@dimen/base_size"
+            android:layout_marginTop="@dimen/base_size"
+            android:text="@string/list_item_post_username_default"
+            app:layout_constraintStart_toEndOf="@+id/list_item_post_profile_pic"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/list_item_post_username_testing" />
 
-    <TextView
-        android:id="@+id/list_item_post_artist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp"
-        android:textSize="16sp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/list_item_post_title"
-        tools:text="@string/list_item_post_artist_testing"
-        tools:textSize="16sp" />
+        <TextView
+            android:id="@+id/list_item_post_message"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/base_size"
+            android:layout_marginStart="@dimen/base_size"
+            android:layout_marginTop="@dimen/base_size"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/list_item_post_profile_pic"
+            tools:text="@string/list_item_post_message_testing" />
 
-</android.support.constraint.ConstraintLayout>
+        <View
+            android:id="@+id/list_item_post_artwork_background"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_item_post_artwork_height"
+            android:layout_marginBottom="@dimen/base_size"
+            android:layout_marginEnd="@dimen/base_size"
+            android:layout_marginLeft="@dimen/base_size"
+            android:layout_marginRight="@dimen/base_size"
+            android:layout_marginStart="@dimen/base_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/list_item_post_username_background"
+            tools:background="@color/colorPrimary" />
+
+        <ImageView
+            android:id="@+id/list_item_post_artwork"
+            android:layout_width="@dimen/list_item_post_artwork_width"
+            android:layout_height="@dimen/list_item_post_artwork_height"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_artwork_placeholder"
+            app:layout_constraintStart_toStartOf="@+id/list_item_post_artwork_background"
+            app:layout_constraintTop_toBottomOf="@+id/list_item_post_username_background"
+            tools:src="@drawable/ic_artwork_placeholder" />
+
+        <TextView
+            android:id="@+id/list_item_post_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/base_size"
+            android:layout_marginRight="@dimen/base_size"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="@+id/list_item_post_artwork_background"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/list_item_post_artwork"
+            app:layout_constraintTop_toBottomOf="@+id/list_item_post_username_background"
+            tools:text="@string/list_item_post_title_testing"
+            tools:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/list_item_post_artist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/base_size"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/list_item_post_title"
+            app:layout_constraintTop_toBottomOf="@+id/list_item_post_title"
+            tools:text="@string/list_item_post_artist_testing"
+            tools:textSize="16sp" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

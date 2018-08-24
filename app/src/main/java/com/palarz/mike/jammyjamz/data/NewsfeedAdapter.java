@@ -1,8 +1,13 @@
 package com.palarz.mike.jammyjamz.data;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +16,9 @@ import android.widget.TextView;
 
 import com.palarz.mike.jammyjamz.R;
 import com.palarz.mike.jammyjamz.model.Post;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +29,8 @@ import java.util.List;
  */
 
 public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.NewsfeedViewHolder> {
+
+    private static final String TAG = "NewsfeedAdapter";
 
     private List<Post> mPosts;
     private Context mContext;
@@ -75,6 +84,8 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
         private ImageView holderArtwork;
         private TextView holderTitle;
         private TextView holderArtist;
+        private View holderArtworkBackground;
+        private View holderUsernameBackground;
 
         public NewsfeedViewHolder(View viewHolder) {
             super(viewHolder);
@@ -84,22 +95,52 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
             holderArtwork = (ImageView) viewHolder.findViewById(R.id.list_item_post_artwork);
             holderTitle = (TextView) viewHolder.findViewById(R.id.list_item_post_title);
             holderArtist = (TextView) viewHolder.findViewById(R.id.list_item_post_artist);
+            holderArtworkBackground = viewHolder.findViewById(R.id.list_item_post_artwork_background);
+            holderUsernameBackground = viewHolder.findViewById(R.id.list_item_post_username_background);
         }
 
         public void bind(Post currentPost){
             if (currentPost.getPhotoUrl() != null) {
+
                 // We will attempt to download the image
                 Picasso.get()
                         .load(currentPost.getPhotoUrl())
                         .placeholder(R.drawable.ic_artwork_placeholder)
                         .error(R.drawable.ic_error)
-                        .into(holderArtwork);
+                        .into(holderArtwork, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                Bitmap bitmap = ((BitmapDrawable) holderArtwork.getDrawable()).getBitmap();
+
+                                Palette.from(bitmap)
+                                        .generate(new Palette.PaletteAsyncListener() {
+                                            @Override
+                                            public void onGenerated(@NonNull Palette palette) {
+                                                Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+
+                                                if (vibrantSwatch != null){
+                                                    holderArtworkBackground.setBackgroundColor(vibrantSwatch.getRgb());
+                                                    holderTitle.setTextColor(vibrantSwatch.getTitleTextColor());
+                                                    holderArtist.setTextColor(vibrantSwatch.getBodyTextColor());
+                                                }
+
+                                            }
+                                        });
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+
+                            }
+                        });
             }
 
             holderUsername.setText(currentPost.getUsername());
             holderTitle.setText(currentPost.getTitle());
             holderArtist.setText(currentPost.getArtists());
             holderMessage.setText(currentPost.getMessage());
+
+
         }
 
     }
