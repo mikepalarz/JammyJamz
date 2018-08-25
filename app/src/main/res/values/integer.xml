@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--WritePost-->
+    <integer name="write_post_message_counter_max">150</integer>
+    <integer name="write_post_message_minimum_lines">3</integer>
+    <integer name="write_post_message_maximum_lines">6</integer>
+
+</resources>
