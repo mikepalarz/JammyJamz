@@ -3,18 +3,21 @@
     <string name="activity_label_post_search">PostSearch</string>
     <string name="activity_label_write_post">WritePost</string>
 
-    <!--Strings for menu actions-->
+    <!--Menu actions-->
     <string name="menu_action_sign_out">Sign Out</string>
 
-    <!--Strings for Post list item layout-->
+    <!--Post list item layout-->
     <string name="list_item_post_username_default">Anonymous</string>
     <string name="list_item_post_username_testing">Mike Palarz</string>
     <string name="list_item_post_message_testing">This is a message within a post</string>
     <string name="list_item_post_title_testing">Hello, world!</string>
     <string name="list_item_post_artist_testing">Why, hello to you too!</string>
 
-    <!--Strings for the search result list item layout-->
+    <!--Search result list item layout-->
     <string name="list_item_search_result_title_default">Title</string>
     <string name="list_item_search_result_artist_default">Artist</string>
+
+    <!--WritePost-->
+    <string name="write_post_message_hint">Jam message</string>
 
 </resources>
