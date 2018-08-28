@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ActionMenuView;
@@ -38,6 +40,8 @@ public class WritePost extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.write_post_toolbar);
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         mMessageContainer = findViewById(R.id.write_post_post_message_container);
         mMessage = findViewById(R.id.write_post_post_message);
@@ -68,6 +72,10 @@ public class WritePost extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
+
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
 
             case R.id.write_post_menu_action_add_post:
                 String currentMessage = mMessage.getText().toString();
