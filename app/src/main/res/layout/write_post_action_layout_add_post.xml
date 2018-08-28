@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true"
+    android:drawablePadding="@dimen/base_size"
+    android:drawableRight="@drawable/ic_send_message"
+    android:drawableEnd="@drawable/ic_send_message"
+    android:gravity="center"
+    android:text="@string/menu_action_add_post"
+    style="@style/TextAppearance.AppCompat.Button" />

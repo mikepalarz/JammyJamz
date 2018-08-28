@@ -249,7 +249,7 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.newsfeed_menu_action_sign_out:
+            case R.id.write_post_menu_action_sign_out:
                 // If the user clicks on the sign-out button within the menu, then we will start
                 // the sign-out process
                 AuthUI.getInstance().signOut(this);

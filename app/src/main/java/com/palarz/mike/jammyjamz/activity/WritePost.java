@@ -4,15 +4,14 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.widget.TextViewCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.firebase.ui.auth.AuthUI;
@@ -29,7 +28,6 @@ public class WritePost extends AppCompatActivity {
     // Contains the message that will be added to the post
     private TextInputLayout mMessageContainer;
     private TextInputEditText mMessage;
-    private ImageButton mSendButton;
     // Post object that was received from PostSearch
     private Post mPost;
 
@@ -49,25 +47,21 @@ public class WritePost extends AppCompatActivity {
             mPost = receivedIntent.getParcelableExtra(EXTRA_CONTENT);
         }
 
-        mSendButton = (ImageButton) findViewById(R.id.write_post_send_button);
-        mSendButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                String currentMessage = mMessage.getText().toString();
-                mPost.setMessage(currentMessage);
-
-                // Create an intent for Newsfeed with the Post with the added message
-                Intent intent = new Intent(WritePost.this, Newsfeed.class);
-                intent.putExtra(Newsfeed.EXTRA_NEW_POST, mPost);
-                startActivity(intent);
-            }
-        });
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_write_post, menu);
+
+        // onClick handler for action view tied to "Jam!" button
+        final MenuItem addPost = menu.findItem(R.id.write_post_menu_action_add_post);
+        addPost.getActionView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOptionsItemSelected(addPost);
+            }
+        });
+
         return true;
     }
 
@@ -75,10 +69,18 @@ public class WritePost extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
 
-            // TODO: Need to add a button for posting the jam!!!
+            case R.id.write_post_menu_action_add_post:
+                String currentMessage = mMessage.getText().toString();
+                mPost.setMessage(currentMessage);
 
-            case R.id.newsfeed_menu_action_sign_out:
-                // TODO: Not the most elegant solution, try to think of something better
+                // Create an intent for Newsfeed with the Post with the added message
+                Intent intent = new Intent(WritePost.this, Newsfeed.class);
+                intent.putExtra(Newsfeed.EXTRA_NEW_POST, mPost);
+                startActivity(intent);
+                return true;
+
+
+            case R.id.write_post_menu_action_sign_out:
                 AuthUI.getInstance()
                         .signOut(this)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {

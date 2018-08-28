@@ -1,9 +1,8 @@
 <resources>
+    <!--Global strings-->
     <string name="app_name">JammyJamz</string>
     <string name="activity_label_post_search">PostSearch</string>
     <string name="activity_label_write_post">WritePost</string>
-
-    <!--Menu actions-->
     <string name="menu_action_sign_out">Sign Out</string>
 
     <!--Post list item layout-->
@@ -19,5 +18,6 @@
 
     <!--WritePost-->
     <string name="write_post_message_hint">Jam message</string>
+    <string name="menu_action_add_post">Jam!</string>
 
 </resources>

@@ -20,7 +20,6 @@ import android.widget.ProgressBar;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.palarz.mike.jammyjamz.networking.ClientGenerator;
 import com.palarz.mike.jammyjamz.data.PostSearchAdapter;
 import com.palarz.mike.jammyjamz.R;
@@ -382,7 +381,7 @@ public class PostSearch extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_post_search, menu);
-        final MenuItem searchItem = menu.findItem(R.id.write_post_menu_action_search);
+        final MenuItem searchItem = menu.findItem(R.id.post_search_menu_action_search);
         // TODO: Update all of this to the latest SearchView best practices
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
@@ -427,7 +426,7 @@ public class PostSearch extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.newsfeed_menu_action_sign_out:
+            case R.id.post_search_menu_action_sign_out:
                 AuthUI.getInstance()
                         .signOut(this)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
