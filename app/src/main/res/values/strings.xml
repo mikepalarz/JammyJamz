@@ -4,6 +4,7 @@
     <string name="activity_label_post_search">PostSearch</string>
     <string name="activity_label_write_post">WritePost</string>
     <string name="menu_action_sign_out">Sign Out</string>
+    <string name="shared_preferences_key_username">com.palarz.mike.jammyjamz.username</string>
 
     <!--Post list item layout-->
     <string name="list_item_post_username_default">Anonymous</string>

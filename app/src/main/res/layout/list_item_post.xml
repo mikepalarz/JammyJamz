@@ -36,7 +36,7 @@
 
         <TextView
             android:id="@+id/list_item_post_username"
-            style="@style/TextAppearance.AppCompat.Body2"
+            style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/base_size"
@@ -44,7 +44,8 @@
             android:layout_marginTop="@dimen/base_size"
             android:text="@string/list_item_post_username_default"
             app:layout_constraintStart_toEndOf="@+id/list_item_post_profile_pic"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/list_item_post_profile_pic"
+            app:layout_constraintBottom_toBottomOf="@id/list_item_post_profile_pic"
             tools:text="@string/list_item_post_username_testing" />
 
         <TextView

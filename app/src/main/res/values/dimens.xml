@@ -2,6 +2,9 @@
     <!--Global dimensions-->
     <dimen name="keyline">16dp</dimen>
     <dimen name="base_size">8dp</dimen>
+    <dimen name="two_increments">16dp</dimen>
+    <dimen name="three_increments">24dp</dimen>
+    <dimen name="four_increments">32dp</dimen>
     <dimen name="toolbar_elevation">4dp</dimen>
 
     <!--Newsfeed dimensions-->
@@ -16,5 +19,6 @@
 
     <!--WritePost-->
     <dimen name="write_post_message_height">120dp</dimen>
+    <dimen name="write_post_profile_pic_size">36dp</dimen>
 
 </resources>

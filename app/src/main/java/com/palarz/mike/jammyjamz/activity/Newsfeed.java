@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -25,6 +27,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.palarz.mike.jammyjamz.Utilities;
 import com.palarz.mike.jammyjamz.data.NewsfeedAdapter;
 import com.palarz.mike.jammyjamz.fragment.PostTypeSelection;
 import com.palarz.mike.jammyjamz.R;
@@ -49,14 +52,8 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     // String which is used to identify when this activity receives an instance of Post within an Intent
     public static final String EXTRA_NEW_POST = "com.palarz.mike.jammyjamz.activity.Newsfeed.new_post";
 
-    // A key which is used to save/retrieve the username that is stored within SharedPreferences
-    private static final String PREFERENCES_KEY_USERNAME = "com.palarz.mike.jammyjamz.activity.Newsfeed.username";
-
     // Tag used for log statements
     private static final String TAG = Newsfeed.class.getSimpleName();
-
-    // A default username in case the user isn't logged in somehow
-    private static final String USERNAME_ANONYMOUS = "Anonymous";
 
     // Our RecyclerView and adapter
     private RecyclerView mRecyclerView;
@@ -104,7 +101,7 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         });
 
         // We'll set mUsername to the current username, or anonymous if the user isn't yet signed in
-        mUsername = getUsername();
+        mUsername = Utilities.getUsername(this);
 
         // Initial setup of the RecyclerView
         mRecyclerView = (RecyclerView) findViewById(R.id.newsfeed_recyclerview);
@@ -170,7 +167,6 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         Intent receivedIntent = getIntent();
         if (receivedIntent != null && receivedIntent.hasExtra(EXTRA_NEW_POST)){
             Post newPost = receivedIntent.getParcelableExtra(EXTRA_NEW_POST);
-            newPost.setUsername(mUsername);
             mPostsReference.push().setValue(newPost);
         }
 
@@ -248,7 +244,9 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
+
             case R.id.write_post_menu_action_sign_out:
                 // If the user clicks on the sign-out button within the menu, then we will start
                 // the sign-out process
@@ -340,9 +338,7 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         have the username properly set, we will also save it to SharedPreferences and then extract
         it when appropriate.
          */
-        SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
-        editor.putString(PREFERENCES_KEY_USERNAME, username);
-        editor.commit();
+        Utilities.saveUsername(this, username);
 
         attachedPostsReadListener();
     }
@@ -375,24 +371,6 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         intent.putExtra(PostSearch.EXTRA_SEARCH_TYPE, postType);
 
         startActivity(intent);
-    }
-
-    /**
-     * Provides the current username. This is a helper method which provides the current username.
-     * If the username has been previously saved to <code>SharedPreferneces</code>, then
-     * the <code>String</code> is extracted from <code>SharedPreferences</code> and returned.
-     * Otherwise, the returned <code>String</code> is just <code>USERNAME_ANONYMOUS</code>.
-     *
-     * @return The current username.
-     */
-    private String getUsername(){
-        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
-        String savedUsername = preferences.getString(PREFERENCES_KEY_USERNAME, "");
-        if (!savedUsername.isEmpty()){
-            return savedUsername;
-        } else {
-            return USERNAME_ANONYMOUS;
-        }
     }
 
 }

@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.palarz.mike.jammyjamz.R;
+import com.palarz.mike.jammyjamz.Utilities;
 import com.palarz.mike.jammyjamz.activity.WritePost;
 import com.palarz.mike.jammyjamz.model.Post;
 import com.palarz.mike.jammyjamz.model.spotify.SpotifyObject;
@@ -123,6 +124,7 @@ public abstract class PostSearchAdapter<T extends SpotifyObject> extends Recycle
         public void onClick(View v) {
             T data = mSearchResults.get(getAdapterPosition());
             Post aPost = data.createPost();
+            aPost.setUsername(Utilities.getUsername(mContext));
 
             Intent intent = new Intent(mContext, WritePost.class);
             intent.putExtra(WritePost.EXTRA_CONTENT, aPost);
