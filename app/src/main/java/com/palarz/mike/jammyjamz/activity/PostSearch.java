@@ -1,11 +1,11 @@
 package com.palarz.mike.jammyjamz.activity;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -72,7 +72,9 @@ public class PostSearch extends AppCompatActivity {
     // Stores the access token obtained through retrieveAccessToken()
     private String mAccessToken;
     // An integer which determines the type of search that will be performed: tracks (= 0), albums (= 1), or artists (= 2)
-    private int mSearchType;
+    private static int mSearchType;
+    // The search query entered into the SearchView
+    private String mQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,25 +86,11 @@ public class PostSearch extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        /*
-        We attempt to extract mSearchType from the received intent
-         */
-        Intent receivedIntent = getIntent();
-        if (receivedIntent != null && receivedIntent.hasExtra(EXTRA_SEARCH_TYPE)){
-            mSearchType = receivedIntent.getIntExtra(EXTRA_SEARCH_TYPE, 0);
-        } else {
-            mSearchType = 0;
-            Log.e(TAG, "No extra attached to received intent, all search requests will be for tracks");
-        }
-
         mSeachResults = (RecyclerView) findViewById(R.id.post_search_recyclerview);
         mSeachResults.setHasFixedSize(true);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mSeachResults.setLayoutManager(layoutManager);
-
-        mAdapter = PostSearchAdapter.create(this, mSearchType);
-        mSeachResults.setAdapter(mAdapter);
 
         mProgressBar = (ProgressBar) findViewById(R.id.post_search_progress_bar);
 
@@ -113,6 +101,31 @@ public class PostSearch extends AppCompatActivity {
         if (accessTokenExpired()) {
             retrieveAccessToken();
         }
+
+        /*
+        We attempt to extract mSearchType from the received intent
+         */
+        Intent receivedIntent = getIntent();
+        if (receivedIntent != null){
+            if (receivedIntent.hasExtra(EXTRA_SEARCH_TYPE)){
+                mSearchType = receivedIntent.getIntExtra(EXTRA_SEARCH_TYPE, 0);
+            }
+            else {
+                mSearchType = 0;
+                Log.e(TAG, "No search type attached to received intent. Adapter will be set to " +
+                        "handle tracks, which can lead to unexpected results.");
+            }
+        } else {
+            mSearchType = 0;
+            Log.e(TAG, "Did not receive an intent. Adapter will be set to " +
+                    "handle tracks, which can lead to unexpected results.");
+        }
+
+        mAdapter = PostSearchAdapter.create(this, mSearchType);
+        mSeachResults.setAdapter(mAdapter);
+
+        // Handling the search query
+        handleSearchQueryIntent(receivedIntent);
     }
 
     /**
@@ -239,6 +252,28 @@ public class PostSearch extends AppCompatActivity {
     private String getAccessToken() {
         SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
         return preferences.getString(PREFERENCES_KEY_TOKEN_RESPONSE_ACCESS_TOKEN, "");
+    }
+
+    /**
+     * Prepares several member variables for a search to be performed. In particular, it
+     * changes the base URL of our search client to the URL that should be used for searches. In
+     * addition, it checks if the access token is expired. If it is, then a new access token will
+     * be retrieved.
+     */
+    private void prepareForSearch(){
+
+        // Set the base URL to the search URL
+        ClientGenerator.changeBaseURL(SearchClient.BASE_URL_SEARCH);
+
+        // We obtain a new instance of the SearchClient with the appropriate base URL
+        mClient = ClientGenerator.createClient(SearchClient.class);
+
+        // Make sure that mAccessToken is using the most recent token that we have
+        mAccessToken = getAccessToken();
+        boolean hasExpired = accessTokenExpired();
+        if (mAccessToken.isEmpty() || hasExpired){
+            retrieveAccessToken();
+        }
     }
 
     /**
@@ -383,46 +418,47 @@ public class PostSearch extends AppCompatActivity {
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        handleSearchQueryIntent(intent);
+    }
+
+    private void handleSearchQueryIntent(Intent receivedIntent){
+        if (receivedIntent != null && receivedIntent.getAction() != null){
+            if (receivedIntent.getAction().equals(Intent.ACTION_SEARCH)){
+                mQuery = receivedIntent.getStringExtra(SearchManager.QUERY);
+                performSearch();
+            }
+        }
+    }
+
+    private void performSearch(){
+        // Depending on the value of mSearchType, a different type of search will be performed
+        switch (mSearchType){
+            case 0:
+                fetchTracks(mQuery);
+                break;
+            case 1:
+                fetchAlbums(mQuery);
+                break;
+            case 2:
+                fetchArtists(mQuery);
+                break;
+            default:
+                Log.e(TAG, "Search could not be performed, unknown search type");
+                break;
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_post_search, menu);
-        final MenuItem searchItem = menu.findItem(R.id.post_search_menu_action_search);
-        // TODO: Update all of this to the latest SearchView best practices
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
-        // We set an OnQueryTextListener to the SearchView
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                // Depending on the value of mSearchType, a different type of search will be performed
-                switch (mSearchType){
-                    case 0:
-                        fetchTracks(query);
-                        break;
-                    case 1:
-                        fetchAlbums(query);
-                        break;
-                    case 2:
-                        fetchArtists(query);
-                        break;
-                    default:
-                        break;
-                }
-                // Reset the SearchView
-                searchView.clearFocus();
-                searchView.setQuery("", false);
-                searchView.setIconified(true);
-                searchItem.collapseActionView();
-                // We'll also set the title of the activity to the current search query
-                PostSearch.this.setTitle(query);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.post_search_menu_action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(true);
 
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                return false;
-            }
-        });
 
         return true;
     }
@@ -449,28 +485,6 @@ public class PostSearch extends AppCompatActivity {
 
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    /**
-     * Prepares several member variables for a search to be performed. In particular, it
-     * changes the base URL of our search client to the URL that should be used for searches. In
-     * addition, it checks if the access token is expired. If it is, then a new access token will
-     * be retrieved.
-     */
-    private void prepareForSearch(){
-
-        // Set the base URL to the search URL
-        ClientGenerator.changeBaseURL(SearchClient.BASE_URL_SEARCH);
-
-        // We obtain a new instance of the SearchClient with the appropriate base URL
-        mClient = ClientGenerator.createClient(SearchClient.class);
-
-        // Make sure that mAccessToken is using the most recent token that we have
-        mAccessToken = getAccessToken();
-        boolean hasExpired = accessTokenExpired();
-        if (mAccessToken.isEmpty() || hasExpired){
-            retrieveAccessToken();
         }
     }
 

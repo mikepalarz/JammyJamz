@@ -22,10 +22,16 @@
         <activity
             android:name=".activity.PostSearch"
             android:label="@string/activity_label_post_search"
-            android:parentActivityName=".activity.Newsfeed">
+            android:parentActivityName=".activity.Newsfeed"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.palarz.mike.jammyjamz.activity.Newsfeed" />
+            <meta-data  android:name="android.app.searchable"
+                        android:resource="@xml/searchable" />
         </activity>
         <activity
             android:name=".activity.WritePost"

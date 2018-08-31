@@ -16,6 +16,9 @@
     <string name="list_item_search_result_title_default">Title</string>
     <string name="list_item_search_result_artist_default">Artist</string>
 
+    <!--PostSearch-->
+    <string name="post_search_search_hint">Search jamz</string>
+
     <!--WritePost-->
     <string name="write_post_message_hint">Jam message</string>
     <string name="menu_action_add_post">Jam!</string>
