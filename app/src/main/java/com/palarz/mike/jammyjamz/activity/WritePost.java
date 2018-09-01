@@ -75,36 +75,9 @@ public class WritePost extends AppCompatActivity {
             mTitle.setText(mPost.getTitle());
             mArtist.setText(mPost.getArtists());
 
-            Picasso.get()
-                    .load(mPost.getPhotoUrl())
-                    .placeholder(R.drawable.ic_artwork_placeholder)
-                    .error(R.drawable.ic_error)
-                    .into(mArtwork, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            Bitmap bitmap = ((BitmapDrawable) mArtwork.getDrawable()).getBitmap();
-
-                            Palette.from(bitmap)
-                                    .generate(new Palette.PaletteAsyncListener() {
-                                        @Override
-                                        public void onGenerated(@NonNull Palette palette) {
-                                            Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
-
-                                            if (vibrantSwatch != null){
-                                                mArtworkBackground.setBackgroundColor(vibrantSwatch.getRgb());
-                                                mTitle.setTextColor(vibrantSwatch.getTitleTextColor());
-                                                mArtist.setTextColor(vibrantSwatch.getBodyTextColor());
-                                            }
-
-                                        }
-                                    });
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-
-                        }
-                    });
+            if (mPost.getPhotoUrl() != null){
+                Utilities.setupArtwork(mPost, mArtwork, mArtworkBackground, mTitle, mArtist);
+            }
         }
 
     }

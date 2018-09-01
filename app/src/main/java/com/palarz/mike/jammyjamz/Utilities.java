@@ -2,8 +2,19 @@ package com.palarz.mike.jammyjamz;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.v7.graphics.Palette;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.palarz.mike.jammyjamz.R;
+import com.palarz.mike.jammyjamz.model.Post;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 
 public class Utilities {
@@ -35,4 +46,39 @@ public class Utilities {
         editor.commit();
     }
 
+    public static void setupArtwork(Post post, final ImageView artwork, final View background,
+                                    final TextView title, final TextView artist){
+        Picasso.get()
+                .load(post.getPhotoUrl())
+                .placeholder(R.drawable.ic_artwork_placeholder)
+                .error(R.drawable.ic_error)
+                .into(artwork, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Bitmap bitmap = ((BitmapDrawable) artwork.getDrawable()).getBitmap();
+
+                        Palette.from(bitmap)
+                                .generate(new Palette.PaletteAsyncListener() {
+                                    @Override
+                                    public void onGenerated(@NonNull Palette palette) {
+                                        Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+
+                                        if (vibrantSwatch != null){
+                                            background.setBackgroundColor(vibrantSwatch.getRgb());
+                                            title.setTextColor(vibrantSwatch.getTitleTextColor());
+                                            artist.setTextColor(vibrantSwatch.getBodyTextColor());
+                                        }
+
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
+    }
 }
+
+

@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.palarz.mike.jammyjamz.R;
+import com.palarz.mike.jammyjamz.Utilities;
 import com.palarz.mike.jammyjamz.model.Post;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -101,38 +102,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
 
         public void bind(Post currentPost){
             if (currentPost.getPhotoUrl() != null) {
-
-                // We will attempt to download the image
-                Picasso.get()
-                        .load(currentPost.getPhotoUrl())
-                        .placeholder(R.drawable.ic_artwork_placeholder)
-                        .error(R.drawable.ic_error)
-                        .into(holderArtwork, new Callback() {
-                            @Override
-                            public void onSuccess() {
-                                Bitmap bitmap = ((BitmapDrawable) holderArtwork.getDrawable()).getBitmap();
-
-                                Palette.from(bitmap)
-                                        .generate(new Palette.PaletteAsyncListener() {
-                                            @Override
-                                            public void onGenerated(@NonNull Palette palette) {
-                                                Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
-
-                                                if (vibrantSwatch != null){
-                                                    holderArtworkBackground.setBackgroundColor(vibrantSwatch.getRgb());
-                                                    holderTitle.setTextColor(vibrantSwatch.getTitleTextColor());
-                                                    holderArtist.setTextColor(vibrantSwatch.getBodyTextColor());
-                                                }
-
-                                            }
-                                        });
-                            }
-
-                            @Override
-                            public void onError(Exception e) {
-
-                            }
-                        });
+                Utilities.setupArtwork(currentPost, holderArtwork, holderArtworkBackground, holderTitle, holderArtist);
             }
 
             holderUsername.setText(currentPost.getUsername());
