@@ -23,6 +23,8 @@ public class Post implements Parcelable {
     private String mUsername;
     @PropertyName("message")
     private String mMessage;
+    @PropertyName("profilePicture")
+    private String mProfilePicture;
 
     public Post() {
         this.mTitle = "";
@@ -30,14 +32,16 @@ public class Post implements Parcelable {
         this.mPhotoUrl = "";
         this.mUsername = "";
         this.mMessage = "";
+        this.mProfilePicture = "";
     }
 
-    public Post(String username, String title, String artist, String photoUrl, String message) {
+    public Post(String username, String title, String artist, String photoUrl, String message, String profilePicture) {
         this.mTitle = title;
         this.mArtists = artist;
         this.mPhotoUrl = photoUrl;
         this.mUsername = username;
         this.mMessage = message;
+        this.mProfilePicture = profilePicture;
     }
 
     // Necessary constructor for the Parcelable interface
@@ -47,6 +51,7 @@ public class Post implements Parcelable {
         mPhotoUrl = input.readString();
         mUsername = input.readString();
         mMessage = input.readString();
+        mProfilePicture = input.readString();
     }
 
     public String getTitle() {
@@ -89,10 +94,19 @@ public class Post implements Parcelable {
         mMessage = message;
     }
 
+    public String getProfilePicture(){
+        return mProfilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture){
+        mProfilePicture = profilePicture;
+    }
+
     @Override
     public String toString(){
         return "Title: " + mTitle + "\tArtists: " + mArtists + "\tPhoto URL: " + mPhotoUrl
-                + "\tUsername: " + mUsername + "\tMessage: " + mMessage;
+                + "\tUsername: " + mUsername + "\tMessage: " + mMessage
+                + "\tProfile picture: " + mProfilePicture;
     }
 
     // The following methods are necessary in order to implement the Parcelable interface
@@ -108,6 +122,7 @@ public class Post implements Parcelable {
         destination.writeString(mPhotoUrl);
         destination.writeString(mUsername);
         destination.writeString(mMessage);
+        destination.writeString(mProfilePicture);
     }
 
     public static final Parcelable.Creator<Post> CREATOR = new Parcelable.Creator<Post>(){

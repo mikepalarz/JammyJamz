@@ -125,6 +125,7 @@ public abstract class PostSearchAdapter<T extends SpotifyObject> extends Recycle
             T data = mSearchResults.get(getAdapterPosition());
             Post aPost = data.createPost();
             aPost.setUsername(Utilities.getUsername(mContext));
+            aPost.setProfilePicture(Utilities.getUserPhoto());
 
             Intent intent = new Intent(mContext, WritePost.class);
             intent.putExtra(WritePost.EXTRA_CONTENT, aPost);

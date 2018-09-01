@@ -4,20 +4,28 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.graphics.Palette;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.palarz.mike.jammyjamz.R;
 import com.palarz.mike.jammyjamz.model.Post;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import okhttp3.internal.Util;
+
 
 public class Utilities {
+
+    private static final String TAG = Utilities.class.getSimpleName();
 
     // A default username in case the user isn't logged in somehow
     public static final String USERNAME_ANONYMOUS = "Anonymous";
@@ -78,6 +86,35 @@ public class Utilities {
 
                     }
                 });
+    }
+
+    public static String getUserPhoto(){
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null){
+
+            Uri photoUri = currentUser.getPhotoUrl();
+            if (photoUri != null){
+                return photoUri.toString();
+            } else {
+                Log.d(TAG, "Profile picture URI does not exist");
+                return "";
+            }
+
+        } else {
+            Log.d(TAG, "Current user is not signed in");
+            return "";
+        }
+    }
+
+    public static void setupProfilePicture(Post post, ImageView imageView){
+        String profilePicUri = post.getProfilePicture();
+
+        if (!profilePicUri.isEmpty()){
+            Picasso.get()
+                    .load(profilePicUri)
+                    .placeholder(R.drawable.ic_profile_pic_placeholder)
+                    .into(imageView);
+        }
     }
 }
 

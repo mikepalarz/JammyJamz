@@ -86,7 +86,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
         private TextView holderTitle;
         private TextView holderArtist;
         private View holderArtworkBackground;
-        private View holderUsernameBackground;
+        private ImageView holderProfilePic;
 
         public NewsfeedViewHolder(View viewHolder) {
             super(viewHolder);
@@ -97,7 +97,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
             holderTitle = (TextView) viewHolder.findViewById(R.id.list_item_post_title);
             holderArtist = (TextView) viewHolder.findViewById(R.id.list_item_post_artist);
             holderArtworkBackground = viewHolder.findViewById(R.id.list_item_post_artwork_background);
-            holderUsernameBackground = viewHolder.findViewById(R.id.list_item_post_username_background);
+            holderProfilePic = viewHolder.findViewById(R.id.list_item_post_profile_pic);
         }
 
         public void bind(Post currentPost){
@@ -109,7 +109,9 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
             holderTitle.setText(currentPost.getTitle());
             holderArtist.setText(currentPost.getArtists());
             holderMessage.setText(currentPost.getMessage());
-
+            if (!currentPost.getProfilePicture().isEmpty()){
+                Utilities.setupProfilePicture(currentPost, holderProfilePic);
+            }
 
         }
 

@@ -78,6 +78,9 @@ public class WritePost extends AppCompatActivity {
             if (mPost.getPhotoUrl() != null){
                 Utilities.setupArtwork(mPost, mArtwork, mArtworkBackground, mTitle, mArtist);
             }
+            if (!mPost.getProfilePicture().isEmpty()) {
+                Utilities.setupProfilePicture(mPost, mProfilePic);
+            }
         }
 
     }
