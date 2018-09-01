@@ -6,6 +6,11 @@
     <dimen name="three_increments">24dp</dimen>
     <dimen name="four_increments">32dp</dimen>
     <dimen name="toolbar_elevation">4dp</dimen>
+    <dimen name="post_text_size_granularity">2sp</dimen>
+    <dimen name="post_text_size_title_min">24sp</dimen>
+    <dimen name="post_text_size_title_max">32sp</dimen>
+    <dimen name="post_text_size_artist_min">12sp</dimen>
+    <dimen name="post_text_size_artist_max">16sp</dimen>
 
     <!--Newsfeed dimensions-->
     <dimen name="newsfeed_fab_margin">16dp</dimen>
@@ -20,5 +25,7 @@
     <!--WritePost-->
     <dimen name="write_post_message_height">120dp</dimen>
     <dimen name="write_post_profile_pic_size">36dp</dimen>
+    <dimen name="write_post_artwork_height">150dp</dimen>
+    <dimen name="write_post_artwork_width">150dp</dimen>
 
 </resources>
