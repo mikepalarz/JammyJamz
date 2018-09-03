@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <!--The size of the shape will be scaled by the containing view-->
+    <size android:width="1dp"
+        android:height="1dp"/>
+    <solid android:color="@color/colorAccent"/>
+</shape>

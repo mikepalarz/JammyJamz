@@ -45,6 +45,15 @@ import java.util.Arrays;
 
 public class Newsfeed extends AppCompatActivity implements PostTypeSelection.PostTypeSelectionListener {
 
+    // TODO: Need to add offline capabilties. See this link for more info:
+    // https://firebase.google.com/docs/database/android/offline-capabilities
+
+    // TODO: Look into sorting the data within the RecyclerView:
+    // https://firebase.google.com/docs/database/android/lists-of-data#sorting_and_filtering_data
+    // TODO: See the following for reversing the order of the posts:
+    // https://github.com/firebase/FirebaseUI-Android/issues/90
+    // https://github.com/firebase/FirebaseUI-Android/issues/310
+
     // Request code used within onActivityResult(); this is used to identify the FirebaseUI sign-in
     // activity within onActivityResult(), which is called after the user signs in
     private static final int RC_SIGN_IN = 1;
