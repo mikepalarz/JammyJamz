@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.palarz.mike.jammyjamz.fragment.PostTypeSelection;
 import com.palarz.mike.jammyjamz.networking.ClientGenerator;
 import com.palarz.mike.jammyjamz.data.PostSearchAdapter;
 import com.palarz.mike.jammyjamz.R;
@@ -41,7 +42,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PostSearch extends AppCompatActivity {
+public class PostSearch extends AppCompatActivity implements PostTypeSelection.PostTypeSelectionListener {
 
     // Tag used for debugging
     private static final String TAG = PostSearch.class.getSimpleName();
@@ -54,6 +55,7 @@ public class PostSearch extends AppCompatActivity {
 
     // An extra for the value of mSearchType
     public static final String EXTRA_SEARCH_TYPE = "post_type";
+    public static final String EXTRA_LAUNCH_DIALOG = "launch_dialog";
 
     // TODO: I really, really need to figure out a better way to hide these...
     // See here for some better ideas on how to hide these:
@@ -114,6 +116,16 @@ public class PostSearch extends AppCompatActivity {
                 mSearchType = 0;
                 Log.e(TAG, "No search type attached to received intent. Adapter will be set to " +
                         "handle tracks, which can lead to unexpected results.");
+            }
+            if (receivedIntent.hasExtra(EXTRA_LAUNCH_DIALOG)){
+                boolean launchDialog = receivedIntent.getBooleanExtra(EXTRA_LAUNCH_DIALOG, false);
+                if (launchDialog){
+                    PostTypeSelection dialog = new PostTypeSelection();
+                    dialog.show(getSupportFragmentManager(), "dialog");
+                }
+
+            } else {
+                Log.d(TAG, "Launch dialog not specified within intent");
             }
         } else {
             mSearchType = 0;
@@ -488,4 +500,11 @@ public class PostSearch extends AppCompatActivity {
         }
     }
 
+    // Callback for the positive button within the dialog
+    @Override
+    public void onPositiveClick(int postType) {
+        mSearchType = postType;
+        mAdapter = PostSearchAdapter.create(this, mSearchType);
+        mSeachResults.setAdapter(mAdapter);
+    }
 }

@@ -378,6 +378,7 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
 
         Intent intent = new Intent(this, PostSearch.class);
         intent.putExtra(PostSearch.EXTRA_SEARCH_TYPE, postType);
+        intent.putExtra(PostSearch.EXTRA_LAUNCH_DIALOG, false);
 
         startActivity(intent);
     }
