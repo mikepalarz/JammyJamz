@@ -22,7 +22,7 @@ public class JammyJamzWidgetProvider extends AppWidgetProvider {
             // Creating a PendingIntent to launch PostSearch
             Intent intent = new Intent(context, PostSearch.class);
             intent.putExtra(PostSearch.EXTRA_LAUNCH_DIALOG, true);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             // Setting an onClickListener to the button within the widget
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.app_widget);
             remoteViews.setOnClickPendingIntent(R.id.app_widget_button, pendingIntent);

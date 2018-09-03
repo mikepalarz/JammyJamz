@@ -104,9 +104,7 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
             retrieveAccessToken();
         }
 
-        /*
-        We attempt to extract mSearchType from the received intent
-         */
+        // Setup of data contained within the received intent
         Intent receivedIntent = getIntent();
         if (receivedIntent != null){
             if (receivedIntent.hasExtra(EXTRA_SEARCH_TYPE)){
@@ -117,6 +115,12 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
                 Log.e(TAG, "No search type attached to received intent. Adapter will be set to " +
                         "handle tracks, which can lead to unexpected results.");
             }
+            /*
+            This extra is used to determine if the PostTypeSelection dialog should be shown or not.
+            The dialog is shown only if the user clicks on the button within the widget. Otherwise,
+            it won't be shown since the user already chose what type of search they'd like to
+            perform within Newsfeed.
+             */
             if (receivedIntent.hasExtra(EXTRA_LAUNCH_DIALOG)){
                 boolean launchDialog = receivedIntent.getBooleanExtra(EXTRA_LAUNCH_DIALOG, false);
                 if (launchDialog){
