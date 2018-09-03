@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
+        android:contentDescription="@string/newsfeed_content_description_newsfeed"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <android.support.design.widget.AppBarLayout
@@ -35,6 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/newsfeed_fab_margin"
+        android:contentDescription="@string/newsfeed_content_description_fab"
         app:srcCompat="@drawable/ic_plus_sign" />
 
 </android.support.design.widget.CoordinatorLayout>

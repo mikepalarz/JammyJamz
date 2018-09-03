@@ -8,7 +8,8 @@
         android:id="@+id/list_item_search_result_cover"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:layout_margin="8dp"/>
+        android:layout_margin="8dp"
+        android:contentDescription="@string/list_item_search_result_content_description_artwork"/>
     
     <TextView
         android:id="@+id/list_item_search_result_title"
@@ -23,9 +24,9 @@
         android:id="@+id/list_item_search_result_artist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/list_item_search_result_title"
         android:layout_marginLeft="8dp"
         android:layout_toRightOf="@id/list_item_search_result_cover"
-        android:layout_below="@id/list_item_search_result_title"
         android:text="@string/list_item_search_result_artist_default"
         android:textSize="12sp"/>
 

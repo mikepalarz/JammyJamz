@@ -6,13 +6,15 @@
 
     <item
         android:id="@+id/post_search_menu_action_search"
-        android:title="Search"
+        android:contentDescription="@string/post_search_content_description_menu_action_search"
         android:icon="@android:drawable/ic_menu_search"
-        app:showAsAction="always"
-        app:actionViewClass="android.support.v7.widget.SearchView" />
+        android:title="@string/post_search_menu_action_search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/post_search_menu_action_sign_out"
+        android:contentDescription="@string/content_description_menu_action_sign_out"
         android:orderInCategory="100"
         android:title="@string/menu_action_sign_out"
         app:showAsAction="never" />

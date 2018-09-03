@@ -8,5 +8,6 @@
     android:drawableRight="@drawable/ic_send_message"
     android:drawableEnd="@drawable/ic_send_message"
     android:gravity="center"
-    android:text="@string/menu_action_add_post"
+    android:text="@string/write_post_menu_action_add_post"
+    android:contentDescription="@string/write_post_content_description_menu_action_add_post"
     style="@style/TextAppearance.AppCompat.Button" />

@@ -4,7 +4,12 @@
     <string name="activity_label_post_search">PostSearch</string>
     <string name="activity_label_write_post">WritePost</string>
     <string name="menu_action_sign_out">Sign Out</string>
+    <string name="content_description_menu_action_sign_out">Sign out</string>
     <string name="shared_preferences_key_username">com.palarz.mike.jammyjamz.username</string>
+
+    <!--Newsfeed-->
+    <string name="newsfeed_content_description_newsfeed">Newsfeed</string>
+    <string name="newsfeed_content_description_fab">New post</string>
 
     <!--Post list item layout-->
     <string name="list_item_post_username_default">Anonymous</string>
@@ -12,16 +17,25 @@
     <string name="list_item_post_message_testing">This is a message within a post</string>
     <string name="list_item_post_title_testing">Hello, world!</string>
     <string name="list_item_post_artist_testing">Why, hello to you too!</string>
+    <string name="list_item_post_content_description_profile_pic">Profile picture</string>
+    <string name="list_item_post_content_description_artwork">Artwork</string>
 
     <!--Search result list item layout-->
     <string name="list_item_search_result_title_default">Title</string>
     <string name="list_item_search_result_artist_default">Artist</string>
+    <string name="list_item_search_result_content_description_artwork">Artwork</string>
 
     <!--PostSearch-->
     <string name="post_search_search_hint">Search jamz</string>
+    <string name="post_search_content_description_recyclerview">Search results</string>
+    <string name="post_search_menu_action_search">Search</string>
+    <string name="post_search_content_description_menu_action_search">Search</string>
 
     <!--WritePost-->
     <string name="write_post_message_hint">Jam message</string>
-    <string name="menu_action_add_post">Jam!</string>
+    <string name="write_post_menu_action_add_post">Jam!</string>
+    <string name="write_post_content_description_menu_action_add_post">Add post</string>
+    <string name="write_post_content_description_profile_pic">Profile picture</string>
+    <string name="write_post_content_description_artwork">Artwork</string>
 
 </resources>
