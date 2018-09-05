@@ -7,6 +7,9 @@
         android:id="@+id/write_post_menu_action_sign_out"
         android:contentDescription="@string/content_description_menu_action_sign_out"
         android:orderInCategory="100"
+        android:importantForAccessibility="yes"
+        android:focusable="true"
+        android:nextFocusForward="@+id/newsfeed_recyclerview"
         android:title="@string/menu_action_sign_out"
         app:showAsAction="never" />
 

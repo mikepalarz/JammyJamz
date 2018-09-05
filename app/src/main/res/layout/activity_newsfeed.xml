@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:importantForAccessibility="yes"
+    android:focusable="true"
+    android:nextFocusForward="@id/newsfeed_toolbar_container"
     tools:context=".activity.Newsfeed">
 
     <android.support.v7.widget.RecyclerView
@@ -12,11 +15,18 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:contentDescription="@string/newsfeed_content_description_newsfeed"
+        android:importantForAccessibility="yes"
+        android:focusable="true"
+        android:nextFocusForward="@id/fab"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/newsfeed_toolbar_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:importantForAccessibility="yes"
+        android:focusable="true"
+        android:nextFocusForward="@id/newsfeed_toolbar"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
@@ -24,6 +34,9 @@
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
             android:background="@color/colorPrimary"
+            android:importantForAccessibility="yes"
+            android:focusable="true"
+            android:nextFocusForward="@+id/newsfeed_recyclerview"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:popupTheme="@style/AppTheme.PopupOverlay"/>
@@ -37,6 +50,9 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/newsfeed_fab_margin"
         android:contentDescription="@string/newsfeed_content_description_fab"
+        android:importantForAccessibility="yes"
+        android:focusable="true"
+        android:nextFocusForward="@id/newsfeed_toolbar_container"
         app:srcCompat="@drawable/ic_plus_sign" />
 
 </android.support.design.widget.CoordinatorLayout>

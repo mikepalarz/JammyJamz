@@ -11,8 +11,6 @@ https://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true"
     tools:context=".activity.WritePost">
 
     <android.support.v7.widget.Toolbar
@@ -21,6 +19,7 @@ https://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-
         android:layout_height="?android:attr/actionBarSize"
         android:background="@color/colorPrimary"
         android:elevation="@dimen/toolbar_elevation"
+        android:focusable="true"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
@@ -61,6 +60,7 @@ https://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-
         android:layout_marginTop="@dimen/three_increments"
         app:counterEnabled="true"
         app:counterMaxLength="@integer/write_post_message_counter_max"
+        android:nextFocusForward="@id/write_post_toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/write_post_profile_pic" >
