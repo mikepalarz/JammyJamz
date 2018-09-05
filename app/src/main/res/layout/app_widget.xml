@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:orientation="horizontal">
 
     <ImageButton
         android:id="@+id/app_widget_button"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:layout_margin="@dimen/base_size"
-        android:src="@drawable/app_widget_button"
-        android:background="@android:color/white"/>
+        android:layout_weight="1"
+        android:background="@android:color/white"
+        android:src="@drawable/app_widget_button"/>
 
     <TextView
         android:id="@+id/app_widget_text_view"
+        style="@style/TextAppearance.AppCompat.Button"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_margin="@dimen/base_size"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="@string/app_name"
-        style="@style/TextAppearance.AppCompat.Button"
-        android:layout_margin="@dimen/base_size"/>
+        android:text="@string/app_name"/>
 
 </LinearLayout>

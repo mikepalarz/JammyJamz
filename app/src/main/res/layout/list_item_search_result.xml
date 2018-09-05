@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:layout_toRightOf="@id/list_item_search_result_cover"
+        android:layout_toEndOf="@id/list_item_search_result_cover"
         android:text="@string/list_item_search_result_title_default"
         android:textSize="24sp"/>
 
@@ -26,7 +27,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/list_item_search_result_title"
         android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:layout_toRightOf="@id/list_item_search_result_cover"
+        android:layout_toEndOf="@id/list_item_search_result_cover"
         android:text="@string/list_item_search_result_artist_default"
         android:textSize="12sp"/>
 
