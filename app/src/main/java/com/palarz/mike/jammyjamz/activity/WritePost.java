@@ -90,6 +90,14 @@ public class WritePost extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_write_post, menu);
 
+        final MenuItem addPost = menu.findItem(R.id.write_post_menu_action_add_post);
+        addPost.getActionView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOptionsItemSelected(addPost);
+            }
+        });
+
         return true;
     }
 

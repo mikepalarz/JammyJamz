@@ -8,6 +8,7 @@
         android:orderInCategory="1"
         android:title="@string/write_post_menu_action_add_post"
         android:contentDescription="@string/write_post_content_description_menu_action_add_post"
+        app:actionLayout="@layout/write_post_action_layout_add_post"
         app:showAsAction="always|withText" />
 
     <item
