@@ -1,8 +1,6 @@
 package com.palarz.mike.jammyjamz.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -10,8 +8,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.graphics.Palette;
-import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,11 +18,10 @@ import android.widget.TextView;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.palarz.mike.jammyjamz.JammyJamzApplication;
 import com.palarz.mike.jammyjamz.R;
 import com.palarz.mike.jammyjamz.Utilities;
 import com.palarz.mike.jammyjamz.model.Post;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 public class WritePost extends AppCompatActivity {
 
@@ -44,11 +39,15 @@ public class WritePost extends AppCompatActivity {
     private TextView mArtist;
     // Post object that was received from PostSearch
     private Post mPost;
+    // Indicates to the user when they've lost connection to the Firebase DB
+    private TextView mNoInternet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_post);
+
+        mNoInternet = findViewById(R.id.no_internet_indicator);
 
         Toolbar toolbar = findViewById(R.id.write_post_toolbar);
         setSupportActionBar(toolbar);
@@ -83,7 +82,12 @@ public class WritePost extends AppCompatActivity {
                 Utilities.setupProfilePicture(mPost, mProfilePic);
             }
         }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        JammyJamzApplication.getInstance().setupNoInternetIndicator(mNoInternet);
     }
 
     @Override

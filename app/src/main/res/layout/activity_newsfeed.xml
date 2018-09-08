@@ -55,4 +55,6 @@
         android:nextFocusForward="@id/newsfeed_toolbar_container"
         app:srcCompat="@drawable/ic_plus_sign" />
 
+    <include layout="@layout/no_internet_indicator" />
+
 </android.support.design.widget.CoordinatorLayout>

@@ -116,6 +116,10 @@ public class Utilities {
                     .into(imageView);
         }
     }
+
+    public static void checkNetworkState(TextView connectionIndicator){
+
+    }
 }
 
 

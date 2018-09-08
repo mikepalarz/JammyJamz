@@ -1,11 +1,7 @@
 package com.palarz.mike.jammyjamz.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -27,11 +24,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.palarz.mike.jammyjamz.JammyJamzApplication;
 import com.palarz.mike.jammyjamz.Utilities;
 import com.palarz.mike.jammyjamz.data.NewsfeedAdapter;
 import com.palarz.mike.jammyjamz.fragment.PostTypeSelection;
 import com.palarz.mike.jammyjamz.R;
 import com.palarz.mike.jammyjamz.model.Post;
+
+import junit.framework.Assert;
 
 import java.util.Arrays;
 
@@ -44,9 +44,6 @@ import java.util.Arrays;
  */
 
 public class Newsfeed extends AppCompatActivity implements PostTypeSelection.PostTypeSelectionListener {
-
-    // TODO: Need to add offline capabilties. See this link for more info:
-    // https://firebase.google.com/docs/database/android/offline-capabilities
 
     // TODO: Look into sorting the data within the RecyclerView:
     // https://firebase.google.com/docs/database/android/lists-of-data#sorting_and_filtering_data
@@ -70,6 +67,8 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
 
     // A String used to store the current username
     private String mUsername;
+    // Used to indicate to the user that they have no Internet connection
+    private TextView mNoInternet;
 
 
     /*
@@ -79,6 +78,8 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     private FirebaseDatabase mFirebaseDatabase;
     // A reference to the "posts" node of the Realtime Database
     private DatabaseReference mPostsReference;
+    // A reference to the connectivity between the Android device and the Firebase Realtime DB server
+    private DatabaseReference mConnectionState;
     // Listens to any posts which have been added to the Realtime Database
     private ChildEventListener mPostsListener;
     // Our FirebaseAuth instance
@@ -94,6 +95,9 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.newsfeed_toolbar);
         setSupportActionBar(toolbar);
+
+        mNoInternet = findViewById(R.id.no_internet_indicator);
+        Assert.assertNotNull("mNoInternet is null", mNoInternet);
 
         // Initialize the FAB and set an OnClickListener
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -124,6 +128,7 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
 
         // Initializing the Firebase Database, posts reference, and authentication
         mFirebaseDatabase = FirebaseDatabase.getInstance();
+
         mFirebaseAuth = FirebaseAuth.getInstance();
         mPostsReference = mFirebaseDatabase.getReference().child("posts");
 
@@ -222,6 +227,8 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         // We attach our auth state listener here since we want to do so only once the app is
         // visible, which is what occurs once onResume() is called
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+
+        JammyJamzApplication.getInstance().setupNoInternetIndicator(mNoInternet);
     }
 
     @Override

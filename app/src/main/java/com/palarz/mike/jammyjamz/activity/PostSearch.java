@@ -18,10 +18,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.SearchView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.palarz.mike.jammyjamz.JammyJamzApplication;
 import com.palarz.mike.jammyjamz.fragment.PostTypeSelection;
 import com.palarz.mike.jammyjamz.networking.ClientGenerator;
 import com.palarz.mike.jammyjamz.data.PostSearchAdapter;
@@ -78,6 +80,9 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
     // The search query entered into the SearchView
     private String mQuery;
 
+    // Indicates to the user when they've lost connection to the Firebase DB
+    private TextView mNoInternet;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +92,8 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        mNoInternet = findViewById(R.id.no_internet_indicator);
 
         mSeachResults = (RecyclerView) findViewById(R.id.post_search_recyclerview);
         mSeachResults.setHasFixedSize(true);
@@ -142,6 +149,13 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
 
         // Handling the search query
         handleSearchQueryIntent(receivedIntent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        JammyJamzApplication.getInstance().setupNoInternetIndicator(mNoInternet);
     }
 
     /**

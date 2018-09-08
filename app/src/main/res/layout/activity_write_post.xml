@@ -6,144 +6,153 @@ activity was being launched. See here for more info:
 https://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-activity-startup/8639921#8639921
 
 -->
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activity.WritePost">
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/write_post_toolbar"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:elevation="@dimen/toolbar_elevation"
-        android:focusable="true"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        app:popupTheme="@style/AppTheme.PopupOverlay"/>
+        android:layout_height="match_parent"
+        tools:context=".activity.WritePost">
 
-    <ImageView
-        android:id="@+id/write_post_profile_pic"
-        android:layout_width="@dimen/write_post_profile_pic_size"
-        android:layout_height="@dimen/write_post_profile_pic_size"
-        android:layout_marginLeft="@dimen/base_size"
-        android:layout_marginStart="@dimen/base_size"
-        android:layout_marginTop="@dimen/base_size"
-        android:contentDescription="@string/write_post_content_description_profile_pic"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/write_post_toolbar"
-        app:srcCompat="@drawable/ic_profile_pic_placeholder" />
-
-    <TextView
-        android:id="@+id/write_post_username"
-        style="@style/TextAppearance.AppCompat.Body1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/base_size"
-        android:layout_marginStart="@dimen/base_size"
-        android:layout_marginTop="@dimen/base_size"
-        android:text="@string/list_item_post_username_default"
-        app:layout_constraintBottom_toBottomOf="@id/write_post_profile_pic"
-        app:layout_constraintStart_toEndOf="@+id/write_post_profile_pic"
-        app:layout_constraintTop_toTopOf="@id/write_post_profile_pic"
-        tools:text="@string/list_item_post_username_testing" />
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/write_post_post_message_container"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/base_size"
-        android:layout_marginStart="@dimen/base_size"
-        android:layout_marginRight="@dimen/base_size"
-        android:layout_marginEnd="@dimen/base_size"
-        android:layout_marginTop="@dimen/three_increments"
-        app:counterEnabled="true"
-        app:counterMaxLength="@integer/write_post_message_counter_max"
-        android:nextFocusForward="@id/write_post_toolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/write_post_profile_pic" >
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/write_post_post_message"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/write_post_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="top|start"
-            android:hint="@string/write_post_message_hint"
-            android:inputType="textMultiLine"
-            android:maxLines="@integer/write_post_message_maximum_lines"
-            android:minLines="@integer/write_post_message_minimum_lines"/>
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:elevation="@dimen/toolbar_elevation"
+            android:focusable="true"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+        <ImageView
+            android:id="@+id/write_post_profile_pic"
+            android:layout_width="@dimen/write_post_profile_pic_size"
+            android:layout_height="@dimen/write_post_profile_pic_size"
+            android:layout_marginLeft="@dimen/base_size"
+            android:layout_marginStart="@dimen/base_size"
+            android:layout_marginTop="@dimen/base_size"
+            android:contentDescription="@string/write_post_content_description_profile_pic"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/write_post_toolbar"
+            app:srcCompat="@drawable/ic_profile_pic_placeholder" />
+
+        <TextView
+            android:id="@+id/write_post_username"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/base_size"
+            android:layout_marginStart="@dimen/base_size"
+            android:layout_marginTop="@dimen/base_size"
+            android:text="@string/list_item_post_username_default"
+            app:layout_constraintBottom_toBottomOf="@id/write_post_profile_pic"
+            app:layout_constraintStart_toEndOf="@+id/write_post_profile_pic"
+            app:layout_constraintTop_toTopOf="@id/write_post_profile_pic"
+            tools:text="@string/list_item_post_username_testing" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/write_post_post_message_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/base_size"
+            android:layout_marginStart="@dimen/base_size"
+            android:layout_marginRight="@dimen/base_size"
+            android:layout_marginEnd="@dimen/base_size"
+            android:layout_marginTop="@dimen/three_increments"
+            app:counterEnabled="true"
+            app:counterMaxLength="@integer/write_post_message_counter_max"
+            android:nextFocusForward="@id/write_post_toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/write_post_profile_pic" >
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/write_post_post_message"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="top|start"
+                android:hint="@string/write_post_message_hint"
+                android:inputType="textMultiLine"
+                android:maxLines="@integer/write_post_message_maximum_lines"
+                android:minLines="@integer/write_post_message_minimum_lines"/>
 
 
-    </android.support.design.widget.TextInputLayout>
+        </android.support.design.widget.TextInputLayout>
 
-    <View
-        android:id="@+id/write_post_artwork_background"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/list_item_post_artwork_height"
-        android:layout_marginBottom="@dimen/base_size"
-        android:layout_marginRight="@dimen/base_size"
-        android:layout_marginEnd="@dimen/base_size"
-        android:layout_marginLeft="@dimen/base_size"
-        android:layout_marginStart="@dimen/base_size"
-        app:layout_constraintTop_toBottomOf="@+id/write_post_post_message_container"
-        tools:background="@color/colorPrimary" />
+        <View
+            android:id="@+id/write_post_artwork_background"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_item_post_artwork_height"
+            android:layout_marginBottom="@dimen/base_size"
+            android:layout_marginRight="@dimen/base_size"
+            android:layout_marginEnd="@dimen/base_size"
+            android:layout_marginLeft="@dimen/base_size"
+            android:layout_marginStart="@dimen/base_size"
+            app:layout_constraintTop_toBottomOf="@+id/write_post_post_message_container"
+            tools:background="@color/colorPrimary" />
 
-    <ImageView
-        android:id="@+id/write_post_artwork"
-        android:layout_width="@dimen/write_post_artwork_width"
-        android:layout_height="@dimen/write_post_artwork_height"
-        android:contentDescription="@string/write_post_content_description_artwork"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_artwork_placeholder"
-        app:layout_constraintStart_toStartOf="@+id/write_post_artwork_background"
-        app:layout_constraintTop_toBottomOf="@+id/write_post_post_message_container"
-        tools:src="@drawable/ic_artwork_placeholder" />
+        <ImageView
+            android:id="@+id/write_post_artwork"
+            android:layout_width="@dimen/write_post_artwork_width"
+            android:layout_height="@dimen/write_post_artwork_height"
+            android:contentDescription="@string/write_post_content_description_artwork"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_artwork_placeholder"
+            app:layout_constraintStart_toStartOf="@+id/write_post_artwork_background"
+            app:layout_constraintTop_toBottomOf="@+id/write_post_post_message_container"
+            tools:src="@drawable/ic_artwork_placeholder" />
 
-    <TextView
-        android:id="@+id/write_post_title"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/base_size"
-        android:layout_marginStart="@dimen/base_size"
-        android:layout_marginRight="@dimen/base_size"
-        android:layout_marginEnd="@dimen/base_size"
-        android:ellipsize="end"
-        android:gravity="top|end"
-        android:textSize="24sp"
-        app:autoSizeMaxTextSize="@dimen/post_text_size_title_max"
-        app:autoSizeMinTextSize="@dimen/post_text_size_title_min"
-        app:autoSizeStepGranularity="@dimen/post_text_size_granularity"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toTopOf="@+id/write_post_artist"
-        app:layout_constraintEnd_toEndOf="@+id/write_post_artwork_background"
-        app:layout_constraintStart_toEndOf="@+id/write_post_artwork"
-        app:layout_constraintTop_toBottomOf="@+id/write_post_post_message_container"
-        tools:text="@string/list_item_post_title_testing"
-        tools:textSize="24sp" />
+        <TextView
+            android:id="@+id/write_post_title"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginLeft="@dimen/base_size"
+            android:layout_marginStart="@dimen/base_size"
+            android:layout_marginRight="@dimen/base_size"
+            android:layout_marginEnd="@dimen/base_size"
+            android:ellipsize="end"
+            android:gravity="top|end"
+            android:textSize="24sp"
+            app:autoSizeMaxTextSize="@dimen/post_text_size_title_max"
+            app:autoSizeMinTextSize="@dimen/post_text_size_title_min"
+            app:autoSizeStepGranularity="@dimen/post_text_size_granularity"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintBottom_toTopOf="@+id/write_post_artist"
+            app:layout_constraintEnd_toEndOf="@+id/write_post_artwork_background"
+            app:layout_constraintStart_toEndOf="@+id/write_post_artwork"
+            app:layout_constraintTop_toBottomOf="@+id/write_post_post_message_container"
+            tools:text="@string/list_item_post_title_testing"
+            tools:textSize="24sp" />
 
-    <TextView
-        android:id="@+id/write_post_artist"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/base_size"
-        android:layout_marginStart="@dimen/base_size"
-        android:layout_marginRight="@dimen/base_size"
-        android:layout_marginEnd="@dimen/base_size"
-        android:ellipsize="end"
-        android:gravity="center_vertical|end"
-        android:textSize="16sp"
-        app:autoSizeMaxTextSize="@dimen/post_text_size_artist_max"
-        app:autoSizeMinTextSize="@dimen/post_text_size_artist_min"
-        app:autoSizeStepGranularity="@dimen/post_text_size_granularity"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toBottomOf="@id/write_post_artwork_background"
-        app:layout_constraintEnd_toEndOf="@+id/write_post_artwork_background"
-        app:layout_constraintStart_toEndOf="@+id/write_post_artwork"
-        app:layout_constraintTop_toBottomOf="@id/write_post_title"
-        tools:text="@string/list_item_post_artist_testing"
-        tools:textSize="16sp" />
+        <TextView
+            android:id="@+id/write_post_artist"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginLeft="@dimen/base_size"
+            android:layout_marginStart="@dimen/base_size"
+            android:layout_marginRight="@dimen/base_size"
+            android:layout_marginEnd="@dimen/base_size"
+            android:ellipsize="end"
+            android:gravity="center_vertical|end"
+            android:textSize="16sp"
+            app:autoSizeMaxTextSize="@dimen/post_text_size_artist_max"
+            app:autoSizeMinTextSize="@dimen/post_text_size_artist_min"
+            app:autoSizeStepGranularity="@dimen/post_text_size_granularity"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintBottom_toBottomOf="@id/write_post_artwork_background"
+            app:layout_constraintEnd_toEndOf="@+id/write_post_artwork_background"
+            app:layout_constraintStart_toEndOf="@+id/write_post_artwork"
+            app:layout_constraintTop_toBottomOf="@id/write_post_title"
+            tools:text="@string/list_item_post_artist_testing"
+            tools:textSize="16sp" />
 
+    </android.support.constraint.ConstraintLayout>
 
-</android.support.constraint.ConstraintLayout>
+    <include layout="@layout/no_internet_indicator" />
+
+</android.support.design.widget.CoordinatorLayout>
+
