@@ -29,6 +29,14 @@ public class JammyJamzApplication extends Application {
         firebaseDatabase.setPersistenceEnabled(true);
     }
 
+    /*
+    TODO: There is a problem with this method: we should also remove the ValueEventListener
+    within onPause() of either the application as a whole or for each activity. Otherwise, there's
+    a chance that the indicator will still be shown if the user locks their device for too long
+    and then reopens the app. An immediate idea is to use use a callback method between the
+    application and activity, since the application class doesn't have direct access to the views
+    contained within the activity.
+     */
     public void setupNoInternetIndicator(final TextView connectionIndicator) {
         // Getting a reference to where Firebase stores connection state
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference(".info/connected");

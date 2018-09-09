@@ -45,12 +45,6 @@ import java.util.Arrays;
 
 public class Newsfeed extends AppCompatActivity implements PostTypeSelection.PostTypeSelectionListener {
 
-    // TODO: Look into sorting the data within the RecyclerView:
-    // https://firebase.google.com/docs/database/android/lists-of-data#sorting_and_filtering_data
-    // TODO: See the following for reversing the order of the posts:
-    // https://github.com/firebase/FirebaseUI-Android/issues/90
-    // https://github.com/firebase/FirebaseUI-Android/issues/310
-
     // Request code used within onActivityResult(); this is used to identify the FirebaseUI sign-in
     // activity within onActivityResult(), which is called after the user signs in
     private static final int RC_SIGN_IN = 1;
@@ -120,6 +114,11 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         mRecyclerView = (RecyclerView) findViewById(R.id.newsfeed_recyclerview);
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        /* Very nifty way to show reverse order in a RecyclerView */
+        // Reverses the order in which the ViewHolderss are displayed, similar to layout changes for RTL
+        layoutManager.setReverseLayout(true);
+        // Sets the RecyclerView to snap to the end of the data contents of the adapter
+        layoutManager.setStackFromEnd(true);
         mRecyclerView.setLayoutManager(layoutManager);
 
         // Initial setup of the adapter
