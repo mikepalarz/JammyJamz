@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="post_types">
-        <item>"Track"</item>
-        <item>"Album"</item>
-        <item>"Artist"</item>
+        <item>@string/post_type_selection_post_type_track</item>
+        <item>@string/post_type_selection_post_type_album</item>
+        <item>@string/post_type_selection_post_type_artist</item>
     </array>
 </resources>

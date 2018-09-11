@@ -32,6 +32,14 @@
     <string name="post_search_menu_action_search">Search</string>
     <string name="post_search_content_description_menu_action_search">Search</string>
 
+    <!--PostTypeSelection-->
+    <string name="post_type_selection_title">What\'s your jam?</string>
+    <string name="post_type_selection_button_positive">Okay</string>
+    <string name="post_type_selection_button_negative">Cancel</string>
+    <string name="post_type_selection_post_type_track">Track</string>
+    <string name="post_type_selection_post_type_album">Album</string>
+    <string name="post_type_selection_post_type_artist">Artist</string>
+
     <!--WritePost-->
     <string name="write_post_message_hint">Jam message</string>
     <string name="write_post_menu_action_add_post">Jam!</string>

@@ -46,21 +46,21 @@ public class PostTypeSelection extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder
-                .setTitle("What's your jam?")
+                .setTitle(getString(R.string.post_type_selection_title))
                 .setSingleChoiceItems(R.array.post_types, 0, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mPostType = which;
                     }
                 })
-                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.post_type_selection_button_positive), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // We'll launch the song search activity from this point
                         mListener.onPositiveClick(mPostType);
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.post_type_selection_button_negative), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 

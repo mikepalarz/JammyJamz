@@ -42,10 +42,6 @@ import java.util.Arrays;
  *
  * @author Mike Palarz
  */
-
-// TODO: Consider changing this to a FirebaseRecyclerAdapter:
-// https://github.com/firebase/FirebaseUI-Android/blob/master/database/README.md
-
 public class Newsfeed extends AppCompatActivity implements PostTypeSelection.PostTypeSelectionListener {
 
     // Request code used within onActivityResult(); this is used to identify the FirebaseUI sign-in
