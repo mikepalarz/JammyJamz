@@ -40,9 +40,18 @@ import com.palarz.mike.jammyjamz.model.spotify.Track;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+/*
+TODO: Use RxJava to perform all three searches asynchronously. That way, you can allow the user
+to perform a search without having to specify what kind of content they'd like to add beforehand.
+You can then filter out the search results based on the search type by perhaps adding a "Filter"
+action to the overflow menu.
+ */
 
 public class PostSearch extends AppCompatActivity implements PostTypeSelection.PostTypeSelectionListener {
 
@@ -68,11 +77,12 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
     private static final String CLIENT_SECRET = "788b8ae21bb644c9a660c613cc912000";
 
     // Contains the results of the search request
-    private RecyclerView mSeachResults;
+    @BindView(R.id.post_search_recyclerview) RecyclerView mSeachResults;
     private PostSearchAdapter mAdapter;
     // Instance of SearchClient which is used to perform all HTTP requests
     private SearchClient mClient;
-    private ProgressBar mProgressBar;
+    @BindView(R.id.post_search_progress_bar) ProgressBar mProgressBar;
+    @BindView(R.id.post_search_toolbar) Toolbar mToolbar;
     // Stores the access token obtained through retrieveAccessToken()
     private String mAccessToken;
     // An integer which determines the type of search that will be performed: tracks (= 0), albums (= 1), or artists (= 2)
@@ -81,27 +91,22 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
     private String mQuery;
 
     // Indicates to the user when they've lost connection to the Firebase DB
-    private TextView mNoInternet;
+    @BindView(R.id.no_internet_indicator) TextView mNoInternet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_search);
+        ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.post_search_toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        mNoInternet = findViewById(R.id.no_internet_indicator);
-
-        mSeachResults = (RecyclerView) findViewById(R.id.post_search_recyclerview);
         mSeachResults.setHasFixedSize(true);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mSeachResults.setLayoutManager(layoutManager);
-
-        mProgressBar = (ProgressBar) findViewById(R.id.post_search_progress_bar);
 
         // We get the access token. If it's expired, then we will retrieve a new access token.
         mAccessToken = getAccessToken();

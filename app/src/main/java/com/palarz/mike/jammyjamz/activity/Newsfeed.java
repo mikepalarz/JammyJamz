@@ -35,6 +35,9 @@ import junit.framework.Assert;
 
 import java.util.Arrays;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * An <code>Activity</code> that displays a newsfeed interface to the end user. It uses the
  * Firebase Realtime Database to display all of the current posts from all users. It also provides
@@ -55,13 +58,16 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     private static final String TAG = Newsfeed.class.getSimpleName();
 
     // Our RecyclerView and adapter
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.newsfeed_recyclerview) RecyclerView mRecyclerView;
     private NewsfeedAdapter mAdapter;
+
+    @BindView(R.id.newsfeed_toolbar) Toolbar mToolbar;
+    @BindView(R.id.fab) FloatingActionButton mFab;
 
     // A String used to store the current username
     private String mUsername;
     // Used to indicate to the user that they have no Internet connection
-    private TextView mNoInternet;
+    @BindView(R.id.no_internet_indicator) TextView mNoInternet;
 
 
     /*
@@ -85,16 +91,14 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newsfeed);
+        ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.newsfeed_toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
 
-        mNoInternet = findViewById(R.id.no_internet_indicator);
         Assert.assertNotNull("mNoInternet is null", mNoInternet);
 
         // Initialize the FAB and set an OnClickListener
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 /*
@@ -110,7 +114,6 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         mUsername = Utilities.getUsername(this);
 
         // Initial setup of the RecyclerView
-        mRecyclerView = (RecyclerView) findViewById(R.id.newsfeed_recyclerview);
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         /* Very nifty way to show reverse order in a RecyclerView */

@@ -23,49 +23,41 @@ import com.palarz.mike.jammyjamz.R;
 import com.palarz.mike.jammyjamz.Utilities;
 import com.palarz.mike.jammyjamz.model.Post;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class WritePost extends AppCompatActivity {
 
     private static final String TAG = WritePost.class.getSimpleName();
     public static final String EXTRA_CONTENT = "com.palarz.mike.jammyjamz.activity.WritePost.extra_content";
 
     // Contains the message that will be added to the post
-    private TextInputLayout mMessageContainer;
-    private TextInputEditText mMessage;
-    private ImageView mProfilePic;
-    private TextView mUsername;
-    private View mArtworkBackground;
-    private ImageView mArtwork;
-    private TextView mTitle;
-    private TextView mArtist;
+    @BindView(R.id.write_post_post_message_container) TextInputLayout mMessageContainer;
+    @BindView(R.id.write_post_post_message) TextInputEditText mMessage;
+    @BindView(R.id.write_post_profile_pic) ImageView mProfilePic;
+    @BindView(R.id.write_post_username) TextView mUsername;
+    @BindView(R.id.write_post_artwork_background) View mArtworkBackground;
+    @BindView(R.id.write_post_artwork) ImageView mArtwork;
+    @BindView(R.id.write_post_title) TextView mTitle;
+    @BindView(R.id.write_post_artist) TextView mArtist;
     // Post object that was received from PostSearch
     private Post mPost;
     // Indicates to the user when they've lost connection to the Firebase DB
-    private TextView mNoInternet;
+    @BindView(R.id.no_internet_indicator) TextView mNoInternet;
+    @BindView(R.id.write_post_toolbar) Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_post);
+        ButterKnife.bind(this);
 
-        mNoInternet = findViewById(R.id.no_internet_indicator);
-
-        Toolbar toolbar = findViewById(R.id.write_post_toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        mMessageContainer = findViewById(R.id.write_post_post_message_container);
-        mMessage = findViewById(R.id.write_post_post_message);
-        mProfilePic = findViewById(R.id.write_post_profile_pic);
-
         // Setting up the username TextView
-        mUsername = findViewById(R.id.write_post_username);
         mUsername.setText(Utilities.getUsername(this));
-
-        mArtworkBackground = findViewById(R.id.write_post_artwork_background);
-        mArtwork = findViewById(R.id.write_post_artwork);
-        mTitle = findViewById(R.id.write_post_title);
-        mArtist = findViewById(R.id.write_post_artist);
 
         Intent receivedIntent = getIntent();
         if (receivedIntent != null && receivedIntent.hasExtra(EXTRA_CONTENT)){

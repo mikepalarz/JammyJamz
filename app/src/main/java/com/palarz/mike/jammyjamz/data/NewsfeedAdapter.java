@@ -24,6 +24,9 @@ import com.squareup.picasso.Target;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * The adapter for the Newsfeed activity. This adapter displays all of the current Post objects
  * that are stored within the Realtime Database.
@@ -80,24 +83,18 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
 
     public class NewsfeedViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView holderUsername;
-        private TextView holderMessage;
-        private ImageView holderArtwork;
-        private TextView holderTitle;
-        private TextView holderArtist;
-        private View holderArtworkBackground;
-        private ImageView holderProfilePic;
+        @BindView(R.id.list_item_post_username) TextView holderUsername;
+        @BindView(R.id.list_item_post_message) TextView holderMessage;
+        @BindView(R.id.list_item_post_artwork) ImageView holderArtwork;
+        @BindView(R.id.list_item_post_title) TextView holderTitle;
+        @BindView(R.id.list_item_post_artist) TextView holderArtist;
+        @BindView(R.id.list_item_post_artwork_background) View holderArtworkBackground;
+        @BindView(R.id.list_item_post_profile_pic) ImageView holderProfilePic;
 
         public NewsfeedViewHolder(View viewHolder) {
             super(viewHolder);
 
-            holderUsername = (TextView) viewHolder.findViewById(R.id.list_item_post_username);
-            holderMessage = (TextView) viewHolder.findViewById(R.id.list_item_post_message);
-            holderArtwork = (ImageView) viewHolder.findViewById(R.id.list_item_post_artwork);
-            holderTitle = (TextView) viewHolder.findViewById(R.id.list_item_post_title);
-            holderArtist = (TextView) viewHolder.findViewById(R.id.list_item_post_artist);
-            holderArtworkBackground = viewHolder.findViewById(R.id.list_item_post_artwork_background);
-            holderProfilePic = viewHolder.findViewById(R.id.list_item_post_profile_pic);
+            ButterKnife.bind(this, viewHolder);
         }
 
         public void bind(Post currentPost){
