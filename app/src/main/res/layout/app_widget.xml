@@ -12,6 +12,7 @@
         android:layout_margin="@dimen/base_size"
         android:layout_weight="1"
         android:background="@android:color/white"
+        android:contentDescription="@string/app_widget_content_description_button"
         android:src="@drawable/app_widget_button"/>
 
     <TextView

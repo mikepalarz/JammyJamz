@@ -47,4 +47,7 @@
     <string name="write_post_content_description_profile_pic">Profile picture</string>
     <string name="write_post_content_description_artwork">Artwork</string>
 
+    <!--App widget-->
+    <string name="app_widget_content_description_button">Add post</string>
+
 </resources>
