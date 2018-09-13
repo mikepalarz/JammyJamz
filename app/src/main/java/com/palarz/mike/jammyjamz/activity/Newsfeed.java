@@ -2,6 +2,7 @@ package com.palarz.mike.jammyjamz.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -70,8 +71,6 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     // Used to indicate to the user that they have no Internet connection
     @BindView(R.id.no_internet_indicator) TextView mNoInternet;
 
-    private static int mScrollPosition;
-
     /*
                                     Firebase member variables
      */
@@ -89,6 +88,9 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     // the user is either signed-in or signed-out
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
+    private static final String BUNDLE_KEY_STATE = "recyclerview_state";
+    private Parcelable mState;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +100,10 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         setSupportActionBar(mToolbar);
 
         Assert.assertNotNull("mNoInternet is null", mNoInternet);
+
+        if (savedInstanceState != null){
+            mState = savedInstanceState.getParcelable(BUNDLE_KEY_STATE);
+        }
 
         // Initialize the FAB and set an OnClickListener
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -227,15 +233,6 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     protected void onResume() {
         super.onResume();
 
-        // Being sure that all RecyclerView and list items have been laid out before we adjust the scroll position
-        mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                ((LinearLayoutManager) mRecyclerView.getLayoutManager()).scrollToPosition(mScrollPosition);
-                mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-        });
-
         // We attach our auth state listener here since we want to do so only once the app is
         // visible, which is what occurs once onResume() is called
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
@@ -246,8 +243,6 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     @Override
     protected void onPause() {
         super.onPause();
-
-        mScrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
 
         // We first check if mAuthStateListener is null, meaning that is hasn't been previously removed
         if (mAuthStateListener != null) {
@@ -263,6 +258,13 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         // We then detach the child events listener and clear any data that may be in our adapter
         detachPostsReadListener();
         mAdapter.clearData();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable(BUNDLE_KEY_STATE, mRecyclerView.getLayoutManager().onSaveInstanceState());
     }
 
     @Override
@@ -312,6 +314,10 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
                     // Here, we are simply getting the post and adding it to the adapter
                     Post addedPost = dataSnapshot.getValue(Post.class);
                     mAdapter.addData(addedPost);
+
+                    if (mState != null){
+                        ((LinearLayoutManager) mRecyclerView.getLayoutManager()).onRestoreInstanceState(mState);
+                    }
                 }
 
                 @Override
@@ -403,5 +409,4 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
 
         startActivity(intent);
     }
-
 }

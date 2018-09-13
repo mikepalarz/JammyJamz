@@ -74,7 +74,6 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
     public void addData(Post addedPost) {
         mPosts.add(addedPost);
         notifyDataSetChanged();
-
     }
 
     public void clearData() {
