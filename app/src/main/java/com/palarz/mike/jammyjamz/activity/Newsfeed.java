@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
@@ -69,6 +70,7 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     // Used to indicate to the user that they have no Internet connection
     @BindView(R.id.no_internet_indicator) TextView mNoInternet;
 
+    private static int mScrollPosition;
 
     /*
                                     Firebase member variables
@@ -225,6 +227,15 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     protected void onResume() {
         super.onResume();
 
+        // Being sure that all RecyclerView and list items have been laid out before we adjust the scroll position
+        mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                ((LinearLayoutManager) mRecyclerView.getLayoutManager()).scrollToPosition(mScrollPosition);
+                mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+
         // We attach our auth state listener here since we want to do so only once the app is
         // visible, which is what occurs once onResume() is called
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
@@ -235,6 +246,8 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     @Override
     protected void onPause() {
         super.onPause();
+
+        mScrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
 
         // We first check if mAuthStateListener is null, meaning that is hasn't been previously removed
         if (mAuthStateListener != null) {

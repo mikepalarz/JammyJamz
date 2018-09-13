@@ -13,7 +13,6 @@
         android:id="@+id/newsfeed_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
         android:contentDescription="@string/newsfeed_content_description_newsfeed"
         android:importantForAccessibility="yes"
         android:focusable="true"
