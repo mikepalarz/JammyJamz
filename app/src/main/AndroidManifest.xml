@@ -42,7 +42,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.palarz.mike.jammyjamz.activity.PostSearch" />
         </activity>
-        <!--App widget-->
+        <!--App widget receiver-->
         <receiver android:name=".widget.JammyJamzWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -50,6 +50,9 @@
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/app_widget_provider_info" />
         </receiver>
+        <!--App widget service for collections-->
+        <service android:name=".widget.JammyJamzRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>

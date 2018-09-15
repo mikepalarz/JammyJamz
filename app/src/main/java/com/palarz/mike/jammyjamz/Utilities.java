@@ -11,6 +11,7 @@ import android.support.v7.graphics.Palette;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -86,6 +87,14 @@ public class Utilities {
 
                     }
                 });
+    }
+
+    public static void setupArtworkForWidget(Post post, RemoteViews remoteViews, int appWidgetID){
+        Picasso.get()
+                .load(post.getPhotoUrl())
+                .placeholder(R.drawable.ic_artwork_placeholder)
+                .error(R.drawable.ic_error)
+                .into(remoteViews, R.id.list_item_app_widget_artwork, new int[] {appWidgetID} );
     }
 
     public static String getUserPhoto(){

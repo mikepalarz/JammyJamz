@@ -55,6 +55,8 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
 
     // String which is used to identify when this activity receives an instance of Post within an Intent
     public static final String EXTRA_NEW_POST = "com.palarz.mike.jammyjamz.activity.Newsfeed.new_post";
+    // String for saving/restoring the scroll state of the RecyclerView
+    private static final String BUNDLE_KEY_STATE = "recyclerview_state";
 
     // Tag used for log statements
     private static final String TAG = Newsfeed.class.getSimpleName();
@@ -88,7 +90,7 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     // the user is either signed-in or signed-out
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
-    private static final String BUNDLE_KEY_STATE = "recyclerview_state";
+    // Parcelable which stores the scroll state of the RecyclerView
     private Parcelable mState;
 
     @Override
@@ -99,8 +101,7 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
 
         setSupportActionBar(mToolbar);
 
-        Assert.assertNotNull("mNoInternet is null", mNoInternet);
-
+        // Retrieving the scroll position of the RecyclerView
         if (savedInstanceState != null){
             mState = savedInstanceState.getParcelable(BUNDLE_KEY_STATE);
         }
@@ -124,7 +125,7 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         // Initial setup of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        /* Very nifty way to show reverse order in a RecyclerView */
+        // Very nifty way to show reverse order in a RecyclerView
         // Reverses the order in which the ViewHolderss are displayed, similar to layout changes for RTL
         layoutManager.setReverseLayout(true);
         // Sets the RecyclerView to snap to the end of the data contents of the adapter
@@ -264,6 +265,8 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
+        // Saving the scroll position of the RecyclerView before the current form of the activity
+        // gets destroyed
         outState.putParcelable(BUNDLE_KEY_STATE, mRecyclerView.getLayoutManager().onSaveInstanceState());
     }
 
@@ -315,6 +318,11 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
                     Post addedPost = dataSnapshot.getValue(Post.class);
                     mAdapter.addData(addedPost);
 
+                    // TODO: Think about using a ValueEventListener instead since it will only be
+                    // called once, but that way we only need to update the scroll position once
+                    // as well
+
+                    // Updating the scroll position of the RecyclerView only until after the data has been populated
                     if (mState != null){
                         ((LinearLayoutManager) mRecyclerView.getLayoutManager()).onRestoreInstanceState(mState);
                     }

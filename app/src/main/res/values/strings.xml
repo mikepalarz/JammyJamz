@@ -49,5 +49,6 @@
 
     <!--App widget-->
     <string name="app_widget_content_description_button">Add post</string>
+    <string name="app_widget_no_data">No data</string>
 
 </resources>
