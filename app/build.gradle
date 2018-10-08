@@ -46,6 +46,10 @@ dependencies {
     // Butterknife dependencies
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    // Glide dependencies
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
 }
 // Necessary to use the Google services plugin for the google-services.json file
 apply plugin: 'com.google.gms.google-services'

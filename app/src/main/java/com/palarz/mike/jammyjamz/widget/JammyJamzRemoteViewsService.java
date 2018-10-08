@@ -3,13 +3,22 @@ package com.palarz.mike.jammyjamz.widget;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.google.firebase.database.ChildEventListener;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.target.AppWidgetTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.palarz.mike.jammyjamz.GlideApp;
+import com.palarz.mike.jammyjamz.JammyJamzAppGlideModule;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,6 +30,9 @@ import com.palarz.mike.jammyjamz.model.Post;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import static com.palarz.mike.jammyjamz.GlideApp.with;
 
 public class JammyJamzRemoteViewsService extends RemoteViewsService {
 
@@ -81,10 +93,22 @@ class JammyJamzRemoteViewsFactory implements RemoteViewsService.RemoteViewsFacto
         remoteViews.setTextViewText(R.id.list_item_app_widget_title, currentPost.getTitle());
         remoteViews.setTextViewText(R.id.list_item_app_widget_artist, currentPost.getArtists());
 
-        // TODO: The last thing to do is to load the images. Look into using Glide for this since
-        // you had so many issues with Picasso
+        // Huge thanks to this GitHub issue for figuring out how to load images into RemoteViews:
+        // https://github.com/bumptech/glide/issues/1405
 
-        Log.e(TAG, "RemoteViews is null: " + (remoteViews == null));
+        // Loading the image into the RemoteView using Glide
+        RequestBuilder<Bitmap> requestBuilder =
+                GlideApp.with(mContext)
+                        .asBitmap()
+                        .load(currentPost.getPhotoUrl())
+                        .centerCrop();
+
+        FutureTarget<Bitmap> futureTarget = requestBuilder.submit();
+        try {
+            remoteViews.setImageViewBitmap(R.id.list_item_app_widget_artwork, futureTarget.get());
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
 
         return remoteViews;
     }
