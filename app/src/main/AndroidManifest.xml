@@ -61,6 +61,7 @@
         <!--App widget service for collections-->
         <service android:name=".widget.JammyJamzRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <service android:name=".data.SearchService"/>
     </application>
 
 </manifest>

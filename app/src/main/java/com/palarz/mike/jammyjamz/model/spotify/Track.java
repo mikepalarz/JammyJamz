@@ -1,8 +1,11 @@
 package com.palarz.mike.jammyjamz.model.spotify;
 
+import android.os.Parcel;
+
 import com.google.gson.annotations.SerializedName;
 import com.palarz.mike.jammyjamz.model.Post;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +16,7 @@ import java.util.List;
  *
  */
 
-public class Track extends SpotifyObject {
+public class Track extends SpotifyObject implements Serializable {
 
     // The name of the track.
     @SerializedName("name")

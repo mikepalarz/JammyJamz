@@ -19,7 +19,7 @@ import java.util.List;
 public class PagingTracks extends Paging {
 
     @SerializedName("items")
-    private List<Track> mTracks;
+    private ArrayList<Track> mTracks;
 
     public PagingTracks() {
         super();
@@ -31,7 +31,7 @@ public class PagingTracks extends Paging {
         this.mTracks = tracks;
     }
 
-    public List<Track> getTracks() {
+    public ArrayList<Track> getTracks() {
         return mTracks;
     }
 }

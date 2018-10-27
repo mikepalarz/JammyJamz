@@ -1,11 +1,14 @@
 package com.palarz.mike.jammyjamz.activity;
 
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.SearchView;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -24,6 +28,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.palarz.mike.jammyjamz.JammyJamzApplication;
+import com.palarz.mike.jammyjamz.data.SearchService;
 import com.palarz.mike.jammyjamz.fragment.PostTypeSelection;
 import com.palarz.mike.jammyjamz.networking.ClientGenerator;
 import com.palarz.mike.jammyjamz.data.PostSearchAdapter;
@@ -38,6 +43,7 @@ import com.palarz.mike.jammyjamz.model.spotify.PagingTracks;
 import com.palarz.mike.jammyjamz.model.spotify.RootJSONResponse;
 import com.palarz.mike.jammyjamz.model.spotify.Track;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -68,6 +74,8 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
     public static final String EXTRA_SEARCH_TYPE = "post_type";
     public static final String EXTRA_LAUNCH_DIALOG = "launch_dialog";
 
+    public static final String ACTION_SEARCH_RESULTS = "search_results";
+
     // TODO: I really, really need to figure out a better way to hide these...
     // See here for some better ideas on how to hide these:
     // https://stackoverflow.com/questions/44396499/android-best-way-to-hide-api-clientid-clientsecret
@@ -92,6 +100,10 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
 
     // Indicates to the user when they've lost connection to the Firebase DB
     @BindView(R.id.no_internet_indicator) TextView mNoInternet;
+
+    // Broadcast receiver stuff
+    BroadcastReceiver mReceiver;
+    LocalBroadcastManager mBroadcastManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +164,25 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
         mAdapter = PostSearchAdapter.create(this, mSearchType);
         mSeachResults.setAdapter(mAdapter);
 
+        mBroadcastManager = LocalBroadcastManager.getInstance(this);
+        mReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(SearchService.ACTION_SEND_RESULTS)){
+                    Bundle bundle = intent.getExtras();
+                    ArrayList<Track> tracks = (ArrayList<Track>) bundle.getSerializable(SearchService.SEARCH_RESULTS);
+                    if (mSearchType == 0){
+                        mAdapter.clearData();
+                        mAdapter.addData(tracks);
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+                }
+            }
+        };
+
+        IntentFilter filter = new IntentFilter(SearchService.ACTION_SEND_RESULTS);
+        mBroadcastManager.registerReceiver(mReceiver, filter);
+
         // Handling the search query
         handleSearchQueryIntent(receivedIntent);
     }
@@ -161,6 +192,13 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
         super.onResume();
 
         JammyJamzApplication.getInstance().setupNoInternetIndicator(mNoInternet);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        mBroadcastManager.unregisterReceiver(mReceiver);
     }
 
     /**
@@ -234,6 +272,12 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
      */
     private void saveTokenResponse(TokenResponse tokenResponse){
         /*
+        TODO: Maybe adjust this so that the token is instead saved to SharedPreferences. This way,
+        you can get the access token within SearchService by creating a helper method within
+        Utilities.
+         */
+
+        /*
         We're using getPreferences() here instead of getSharedPreferences() since getPreferences()
         provides us with the default SharedPreferences for the current activity. If we used
         getSharedPreferences(), then other activities could potentially access the same
@@ -302,6 +346,16 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
 
         // We obtain a new instance of the SearchClient with the appropriate base URL
         mClient = ClientGenerator.createClient(SearchClient.class);
+
+        // Make sure that mAccessToken is using the most recent token that we have
+        mAccessToken = getAccessToken();
+        boolean hasExpired = accessTokenExpired();
+        if (mAccessToken.isEmpty() || hasExpired){
+            retrieveAccessToken();
+        }
+    }
+
+    private void prepareAccessToken(){
 
         // Make sure that mAccessToken is using the most recent token that we have
         mAccessToken = getAccessToken();
@@ -469,9 +523,16 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
 
     private void performSearch(){
         // Depending on the value of mSearchType, a different type of search will be performed
+        mProgressBar.setVisibility(ProgressBar.VISIBLE);
+        prepareAccessToken();
         switch (mSearchType){
             case 0:
-                fetchTracks(mQuery);
+//                fetchTracks(mQuery);
+                Intent tracksIntent = new Intent(this, SearchService.class);
+                tracksIntent.putExtra(SearchService.EXTRA_ACCESS_TOKEN, mAccessToken);
+                tracksIntent.putExtra(SearchService.EXTRA_SEARCH_TYPE, mSearchType);
+                tracksIntent.putExtra(SearchService.EXTRA_QUERY, mQuery);
+                startService(tracksIntent);
                 break;
             case 1:
                 fetchAlbums(mQuery);
