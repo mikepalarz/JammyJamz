@@ -29,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.palarz.mike.jammyjamz.JammyJamzApplication;
 import com.palarz.mike.jammyjamz.Utilities;
 import com.palarz.mike.jammyjamz.data.NewsfeedAdapter;
+import com.palarz.mike.jammyjamz.data.SearchService.SearchType;
 import com.palarz.mike.jammyjamz.fragment.PostTypeSelection;
 import com.palarz.mike.jammyjamz.R;
 import com.palarz.mike.jammyjamz.model.Post;
@@ -407,7 +408,7 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
      * @param postType An integer which indicates what type of post the user has selected.
      */
     @Override
-    public void onPositiveClick(int postType) {
+    public void onPositiveClick(SearchType postType) {
         // We'll start the song search activity here
         Log.i(TAG, "Ok button clicked within dialog");
 

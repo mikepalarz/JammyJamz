@@ -2,6 +2,7 @@ package com.palarz.mike.jammyjamz.model.spotify;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import java.util.List;
 public class PagingAlbums extends Paging {
 
     @SerializedName("items")
-    private List<Album> mAlbums;
+    private ArrayList<Album> mAlbums;
 
     public PagingAlbums() {
         super();
@@ -30,7 +31,7 @@ public class PagingAlbums extends Paging {
         this.mAlbums = albums;
     }
 
-    public List<Album> getAlbums() {
+    public ArrayList<Album> getAlbums() {
         return mAlbums;
     }
 

@@ -3,6 +3,7 @@ package com.palarz.mike.jammyjamz.model.spotify;
 import com.google.gson.annotations.SerializedName;
 import com.palarz.mike.jammyjamz.model.Post;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  *
  */
 
-public class Artist extends SpotifyObject {
+public class Artist extends SpotifyObject implements Serializable {
 
     @SerializedName("name")
     String mName;

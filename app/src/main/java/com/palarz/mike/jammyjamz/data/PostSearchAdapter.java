@@ -13,6 +13,7 @@ import com.palarz.mike.jammyjamz.Utilities;
 import com.palarz.mike.jammyjamz.activity.WritePost;
 import com.palarz.mike.jammyjamz.model.Post;
 import com.palarz.mike.jammyjamz.model.spotify.SpotifyObject;
+import com.palarz.mike.jammyjamz.data.SearchService.SearchType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,13 +70,13 @@ public abstract class PostSearchAdapter<T extends SpotifyObject> extends Recycle
      * @return A new PostSearchAdapter subclass that is appropriate for the value of
      * <code>adapterType</code>.
      */
-    public static PostSearchAdapter create(Context context, int adapterType) {
+    public static PostSearchAdapter create(Context context, SearchType adapterType) {
         switch (adapterType){
-            case 0:
+            case TRACK:
                 return new TrackAdapter(context);
-            case 1:
+            case ALBUM:
                 return new AlbumAdapter(context);
-            case 2:
+            case ARTIST:
                 return new ArtistAdapter(context);
             default:
                 throw new IllegalArgumentException("Invalid adapter type: " + adapterType);

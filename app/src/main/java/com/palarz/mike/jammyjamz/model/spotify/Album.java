@@ -3,6 +3,7 @@ package com.palarz.mike.jammyjamz.model.spotify;
 import com.google.gson.annotations.SerializedName;
 import com.palarz.mike.jammyjamz.model.Post;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  *
  */
 
-public class Album extends SpotifyObject {
+public class Album extends SpotifyObject implements Serializable {
 
     // The name of the album. In case of an album takedown, the value may be an empty string.
     @SerializedName("name")

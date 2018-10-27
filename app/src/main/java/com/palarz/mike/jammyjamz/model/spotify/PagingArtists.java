@@ -19,7 +19,7 @@ import java.util.List;
 public class PagingArtists extends Paging {
 
     @SerializedName("items")
-    private List<Artist> mArtists;
+    private ArrayList<Artist> mArtists;
 
     public PagingArtists() {
         super();
@@ -31,7 +31,7 @@ public class PagingArtists extends Paging {
         this.mArtists = artists;
     }
 
-    public List<Artist> getArtists() {
+    public ArrayList<Artist> getArtists() {
         return mArtists;
     }
 

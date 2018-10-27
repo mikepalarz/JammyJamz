@@ -8,17 +8,21 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 
 import com.palarz.mike.jammyjamz.R;
+import com.palarz.mike.jammyjamz.data.SearchService.SearchType;
 
 public class PostTypeSelection extends DialogFragment {
 
+    private static final String TAG = DialogFragment.class.getSimpleName();
+
     public interface PostTypeSelectionListener {
-        void onPositiveClick(int postType);
+        void onPositiveClick(SearchType postType);
     }
 
     // Stores what type of post the user has selected to make
-    private int mPostType;
+    private SearchType mPostType;
     private PostTypeSelectionListener mListener;
 
     // Checking to make sure that the activity which hosts this fragment has implemented the
@@ -38,7 +42,7 @@ public class PostTypeSelection extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mPostType = 0;
+        mPostType = SearchType.TRACK;
     }
 
     @NonNull
@@ -49,8 +53,21 @@ public class PostTypeSelection extends DialogFragment {
                 .setTitle(getString(R.string.post_type_selection_title))
                 .setSingleChoiceItems(R.array.post_types, 0, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mPostType = which;
+                    public void onClick(DialogInterface dialog, int selection) {
+                        switch (selection){
+                            case 0:
+                                mPostType = SearchType.TRACK;
+                                break;
+                            case 1:
+                                mPostType = SearchType.ALBUM;
+                                break;
+                            case 2:
+                                mPostType = SearchType.ARTIST;
+                                break;
+                            default:
+                                Log.w(TAG, "Undefined post type. Assuming post will be a track");
+                                mPostType = SearchType.TRACK;
+                        }
                     }
                 })
                 .setPositiveButton(getString(R.string.post_type_selection_button_positive), new DialogInterface.OnClickListener() {

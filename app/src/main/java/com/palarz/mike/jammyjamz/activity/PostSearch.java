@@ -29,22 +29,19 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.palarz.mike.jammyjamz.JammyJamzApplication;
 import com.palarz.mike.jammyjamz.data.SearchService;
+import com.palarz.mike.jammyjamz.data.SearchService.SearchType;
 import com.palarz.mike.jammyjamz.fragment.PostTypeSelection;
+import com.palarz.mike.jammyjamz.model.spotify.Album;
+import com.palarz.mike.jammyjamz.model.spotify.Artist;
+import com.palarz.mike.jammyjamz.model.spotify.SpotifyObject;
 import com.palarz.mike.jammyjamz.networking.ClientGenerator;
 import com.palarz.mike.jammyjamz.data.PostSearchAdapter;
 import com.palarz.mike.jammyjamz.R;
 import com.palarz.mike.jammyjamz.networking.SearchClient;
 import com.palarz.mike.jammyjamz.networking.TokenResponse;
-import com.palarz.mike.jammyjamz.model.spotify.Album;
-import com.palarz.mike.jammyjamz.model.spotify.Artist;
-import com.palarz.mike.jammyjamz.model.spotify.PagingAlbums;
-import com.palarz.mike.jammyjamz.model.spotify.PagingArtists;
-import com.palarz.mike.jammyjamz.model.spotify.PagingTracks;
-import com.palarz.mike.jammyjamz.model.spotify.RootJSONResponse;
 import com.palarz.mike.jammyjamz.model.spotify.Track;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,8 +71,6 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
     public static final String EXTRA_SEARCH_TYPE = "post_type";
     public static final String EXTRA_LAUNCH_DIALOG = "launch_dialog";
 
-    public static final String ACTION_SEARCH_RESULTS = "search_results";
-
     // TODO: I really, really need to figure out a better way to hide these...
     // See here for some better ideas on how to hide these:
     // https://stackoverflow.com/questions/44396499/android-best-way-to-hide-api-clientid-clientsecret
@@ -94,7 +89,7 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
     // Stores the access token obtained through retrieveAccessToken()
     private String mAccessToken;
     // An integer which determines the type of search that will be performed: tracks (= 0), albums (= 1), or artists (= 2)
-    private static int mSearchType;
+    private static SearchType mSearchType;
     // The search query entered into the SearchView
     private String mQuery;
 
@@ -132,10 +127,10 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
         Intent receivedIntent = getIntent();
         if (receivedIntent != null){
             if (receivedIntent.hasExtra(EXTRA_SEARCH_TYPE)){
-                mSearchType = receivedIntent.getIntExtra(EXTRA_SEARCH_TYPE, 0);
+                mSearchType = (SearchType) receivedIntent.getSerializableExtra(EXTRA_SEARCH_TYPE);
             }
             else {
-                mSearchType = 0;
+                mSearchType = SearchType.TRACK;
                 Log.e(TAG, "No search type attached to received intent. Adapter will be set to " +
                         "handle tracks, which can lead to unexpected results.");
             }
@@ -156,7 +151,7 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
                 Log.d(TAG, "Launch dialog not specified within intent");
             }
         } else {
-            mSearchType = 0;
+            mSearchType = SearchType.TRACK;
             Log.e(TAG, "Did not receive an intent. Adapter will be set to " +
                     "handle tracks, which can lead to unexpected results.");
         }
@@ -170,11 +165,27 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(SearchService.ACTION_SEND_RESULTS)){
                     Bundle bundle = intent.getExtras();
-                    ArrayList<Track> tracks = (ArrayList<Track>) bundle.getSerializable(SearchService.SEARCH_RESULTS);
-                    if (mSearchType == 0){
-                        mAdapter.clearData();
-                        mAdapter.addData(tracks);
-                        mProgressBar.setVisibility(View.GONE);
+                    switch (mSearchType){
+                        case TRACK:
+                            ArrayList<Track> tracks = (ArrayList<Track>) bundle.getSerializable(SearchService.EXTRA_SEARCH_RESULTS);
+                            mAdapter.clearData();
+                            mAdapter.addData(tracks);
+                            mProgressBar.setVisibility(View.GONE);
+                            break;
+
+                        case ALBUM:
+                            ArrayList<Album> albums = (ArrayList<Album>) bundle.getSerializable(SearchService.EXTRA_SEARCH_RESULTS);
+                            mAdapter.clearData();
+                            mAdapter.addData(albums);
+                            mProgressBar.setVisibility(View.GONE);
+                            break;
+
+                        case ARTIST:
+                            ArrayList<Artist> artists = (ArrayList<Artist>) bundle.getSerializable(SearchService.EXTRA_SEARCH_RESULTS);
+                            mAdapter.clearData();
+                            mAdapter.addData(artists);
+                            mProgressBar.setVisibility(View.GONE);
+                            break;
                     }
                 }
             }
@@ -365,147 +376,6 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
         }
     }
 
-    /**
-     * Searches for tracks based on the user's query. An HTTP request is sent. If a successful
-     * response is received, then the current contents of <code>mSearchResults</code> is cleared
-     * and the new search results are added to the adapter.
-     *
-     * @param query The query that the user entered into the SearchView.
-     */
-    private void fetchTracks(String query) {
-        // We show the ProgressBar to the user so that they're aware that the HTTP request is being made
-        mProgressBar.setVisibility(ProgressBar.VISIBLE);
-
-        // Prepare mClient and mAccessToken for a search
-        prepareForSearch();
-
-        // Finally, we create our call object and initiate the HTTP request.
-        Call<RootJSONResponse> call = mClient.searchForTrack("Bearer " + mAccessToken, query);
-
-        call.enqueue(new Callback<RootJSONResponse>() {
-            @Override
-            public void onResponse(Call<RootJSONResponse> call, Response<RootJSONResponse> response) {
-                RootJSONResponse rootJSONResponse = null;
-
-                // If the response was successful...
-                if (response.isSuccessful()) {
-                    Log.d(TAG, "onResponse: The full URL: " + call.request().url());
-
-                    // ...we clear the adapter and populate the RootJSONResponse object
-                    mAdapter.clearData();
-                    rootJSONResponse = response.body();
-
-                    // We then extract the tracks and add them to the adapter to be displayed
-                    PagingTracks pagingTracks = rootJSONResponse.getPagingTracks();
-                    List<Track> tracks = pagingTracks.getTracks();
-                    mAdapter.addData(tracks);
-
-                    mProgressBar.setVisibility(ProgressBar.GONE);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RootJSONResponse> call, Throwable t) {
-                Log.d(TAG, "onFailure: The full URL: " + call.request().url());
-                mProgressBar.setVisibility(ProgressBar.GONE);
-            }
-        });
-    }
-
-    /**
-     * Searches for albums based on the user's query. An HTTP request is sent. If a successful
-     * response is received, then the current contents of <code>mSearchResults</code> is cleared
-     * and the new search results are added to the adapter.
-     *
-     * @param query The query that the user entered into the SearchView.
-     */
-    private void fetchAlbums(String query) {
-        // We show the ProgressBar to the user so that they're aware that the HTTP request is being made
-        mProgressBar.setVisibility(ProgressBar.VISIBLE);
-
-        // Prepare mClient and mAccessToken for a search
-        prepareForSearch();
-
-        // Finally, we create our call object and initiate the HTTP request.
-        Call<RootJSONResponse> call = mClient.searchForAlbum("Bearer " + mAccessToken, query);
-
-        call.enqueue(new Callback<RootJSONResponse>() {
-            @Override
-            public void onResponse(Call<RootJSONResponse> call, Response<RootJSONResponse> response) {
-                RootJSONResponse rootJSONResponse = null;
-
-                // If the response was successful...
-                if (response.isSuccessful()) {
-                    Log.d(TAG, "onResponse: The full URL: " + call.request().url());
-
-                    // ...we clear the adapter and populate the RootJSONResponse object
-                    mAdapter.clearData();
-                    rootJSONResponse = response.body();
-
-                    // We then extract the tracks and add them to the adapter to be displayed
-                    PagingAlbums pagingAlbums = rootJSONResponse.getPagingAlbums();
-                    List<Album> albums = pagingAlbums.getAlbums();
-                    mAdapter.addData(albums);
-
-                    mProgressBar.setVisibility(ProgressBar.GONE);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RootJSONResponse> call, Throwable t) {
-                Log.d(TAG, "onFailure: The full URL: " + call.request().url());
-                mProgressBar.setVisibility(ProgressBar.GONE);
-            }
-        });
-    }
-
-    /**
-     * Searches for artists based on the user's query. An HTTP request is sent. If a successful
-     * response is received, then the current contents of <code>mSearchResults</code> is cleared
-     * and the new search results are added to the adapter.
-     *
-     * @param query The query that the user entered into the SearchView.
-     */
-    private void fetchArtists(String query) {
-        // We show the ProgressBar to the user so that they're aware that the HTTP request is being made
-        mProgressBar.setVisibility(ProgressBar.VISIBLE);
-
-        // Prepare mClient and mAccessToken for a search
-        prepareForSearch();
-
-        // Finally, we create our call object and initiate the HTTP request.
-        Call<RootJSONResponse> call = mClient.searchForArtist("Bearer " + mAccessToken, query);
-
-        call.enqueue(new Callback<RootJSONResponse>() {
-            @Override
-            public void onResponse(Call<RootJSONResponse> call, Response<RootJSONResponse> response) {
-                RootJSONResponse rootJSONResponse = null;
-
-                // If the response was successful...
-                if (response.isSuccessful()) {
-                    Log.d(TAG, "onResponse: The full URL: " + call.request().url());
-
-                    // ...we clear the adapter and populate the RootJSONResponse object
-                    mAdapter.clearData();
-                    rootJSONResponse = response.body();
-
-                    // We then extract the tracks and add them to the adapter to be displayed
-                    PagingArtists pagingArtists = rootJSONResponse.getPagingArtists();
-                    List<Artist> artists = pagingArtists.getArtists();
-                    mAdapter.addData(artists);
-
-                    mProgressBar.setVisibility(ProgressBar.GONE);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RootJSONResponse> call, Throwable t) {
-                Log.d(TAG, "onFailure: The full URL: " + call.request().url());
-                mProgressBar.setVisibility(ProgressBar.GONE);
-            }
-        });
-    }
-
     @Override
     protected void onNewIntent(Intent intent) {
         setIntent(intent);
@@ -525,25 +395,30 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
         // Depending on the value of mSearchType, a different type of search will be performed
         mProgressBar.setVisibility(ProgressBar.VISIBLE);
         prepareAccessToken();
-        switch (mSearchType){
-            case 0:
-//                fetchTracks(mQuery);
-                Intent tracksIntent = new Intent(this, SearchService.class);
-                tracksIntent.putExtra(SearchService.EXTRA_ACCESS_TOKEN, mAccessToken);
-                tracksIntent.putExtra(SearchService.EXTRA_SEARCH_TYPE, mSearchType);
-                tracksIntent.putExtra(SearchService.EXTRA_QUERY, mQuery);
-                startService(tracksIntent);
-                break;
-            case 1:
-                fetchAlbums(mQuery);
-                break;
-            case 2:
-                fetchArtists(mQuery);
-                break;
-            default:
-                Log.e(TAG, "Search could not be performed, unknown search type");
-                break;
-        }
+
+        Intent searchIntent = new Intent(this, SearchService.class);
+        searchIntent.putExtra(SearchService.EXTRA_ACCESS_TOKEN, mAccessToken);
+        searchIntent.putExtra(SearchService.EXTRA_QUERY, mQuery);
+//        SearchType searchType = SearchType.valueOf(String.valueOf(mSearchType));
+        searchIntent.putExtra(SearchService.EXTRA_SEARCH_TYPE, mSearchType);
+        startService(searchIntent);
+
+//        switch (mSearchType){
+//            case 0:
+//                SearchType searchType = SearchType.valueOf(String.valueOf(mSearchType));
+//                searchIntent.putExtra(SearchService.EXTRA_SEARCH_TYPE, searchType);
+//                startService(searchIntent);
+//                break;
+//            case 1:
+//                fetchAlbums(mQuery);
+//                break;
+//            case 2:
+//                fetchArtists(mQuery);
+//                break;
+//            default:
+//                Log.e(TAG, "Search could not be performed, unknown search type");
+//                break;
+//        }
     }
 
     @Override
@@ -586,8 +461,8 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
 
     // Callback for the positive button within the dialog
     @Override
-    public void onPositiveClick(int postType) {
-        mSearchType = postType;
+    public void onPositiveClick(SearchType searchType) {
+        mSearchType = searchType;
         mAdapter = PostSearchAdapter.create(this, mSearchType);
         mSeachResults.setAdapter(mAdapter);
     }
