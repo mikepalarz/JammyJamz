@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.palarz.mike.jammyjamz.Utilities;
 import com.palarz.mike.jammyjamz.model.spotify.Album;
 import com.palarz.mike.jammyjamz.model.spotify.Artist;
 import com.palarz.mike.jammyjamz.model.spotify.PagingAlbums;
@@ -65,16 +66,15 @@ public class SearchService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d(TAG, "SearchService: onCreate()");
         mBroadcastManager = LocalBroadcastManager.getInstance(this);
     }
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        Log.d(TAG, "SearchService: onHandleIntent()");
         if (intent != null){
             mQuery = intent.getStringExtra(EXTRA_QUERY);
-            mAccessToken = intent.getStringExtra(EXTRA_ACCESS_TOKEN);
-//            int type = intent.getIntExtra(EXTRA_SEARCH_TYPE, 0);
-//            mSearchType = SearchType.valueOf(String.valueOf(type));
             mSearchType = (SearchType) intent.getSerializableExtra(EXTRA_SEARCH_TYPE);
             switch (mSearchType){
                 case TRACK:
@@ -107,6 +107,8 @@ public class SearchService extends IntentService {
 
         // We obtain a new instance of the SearchClient with the appropriate base URL
         mClient = ClientGenerator.createClient(SearchClient.class);
+        mAccessToken = Utilities.getAccessToken(this);
+        Log.d(TAG, "Access token empty: " + mAccessToken.isEmpty());
 
     }
 
