@@ -28,6 +28,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.palarz.mike.jammyjamz.JammyJamzApplication;
+import com.palarz.mike.jammyjamz.Utilities;
 import com.palarz.mike.jammyjamz.data.SearchService;
 import com.palarz.mike.jammyjamz.data.SearchService.SearchType;
 import com.palarz.mike.jammyjamz.fragment.PostTypeSelection;
@@ -62,10 +63,10 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
     private static final String TAG = PostSearch.class.getSimpleName();
 
     // Keys used for SharedPreferences in order to save everything related to the access token
-    private static final String PREFERENCES_KEY_TOKEN_RESPONSE_ACCESS_TOKEN = "com.palarz.mike.jammyjamz.access_token";
-    private static final String PREFERENCES_KEY_TOKEN_RESPONSE_TOKEN_TYPE = "com.palarz.mike.jammyjamz.token_type";
-    private static final String PREFERENCES_KEY_TOKEN_RESPONSE_EXPIRATION = "com.palarz.mike.jammyjamz.expiration";
-    private static final String PREFERENCES_KEY_TOKEN_RESPONSE_TIME_SAVED = "com.palarz.mike.jammyjamz.time_saved";
+//    private static final String PREFERENCES_KEY_TOKEN_RESPONSE_ACCESS_TOKEN = "com.palarz.mike.jammyjamz.access_token";
+//    private static final String PREFERENCES_KEY_TOKEN_RESPONSE_TOKEN_TYPE = "com.palarz.mike.jammyjamz.token_type";
+//    private static final String PREFERENCES_KEY_TOKEN_RESPONSE_EXPIRATION = "com.palarz.mike.jammyjamz.expiration";
+//    private static final String PREFERENCES_KEY_TOKEN_RESPONSE_TIME_SAVED = "com.palarz.mike.jammyjamz.time_saved";
 
     // An extra for the value of mSearchType
     public static final String EXTRA_SEARCH_TYPE = "post_type";
@@ -116,10 +117,10 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
         mSeachResults.setLayoutManager(layoutManager);
 
         // We get the access token. If it's expired, then we will retrieve a new access token.
-        mAccessToken = getAccessToken();
+        mAccessToken = Utilities.getAccessToken(this);
 
         // If the access token is expired, then we will attempt to retrieve a new one
-        if (accessTokenExpired()) {
+        if (Utilities.isAccessTokenExpired(this)) {
             retrieveAccessToken();
         }
 
@@ -235,7 +236,7 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
                     tokenResponse = response.body();
                     Log.d(TAG, tokenResponse.toString());
                     mAccessToken = tokenResponse.getAccessToken();
-                    saveTokenResponse(tokenResponse);
+                    Utilities.saveTokenResponse(PostSearch.this, tokenResponse);
                 }
             }
 
@@ -281,29 +282,29 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
      * @param tokenResponse A <code>TokenResponse</code> that is ideally retrieved on a successful
      *                      HTTP request for the access token.
      */
-    private void saveTokenResponse(TokenResponse tokenResponse){
-        /*
-        TODO: Maybe adjust this so that the token is instead saved to SharedPreferences. This way,
-        you can get the access token within SearchService by creating a helper method within
-        Utilities.
-         */
-
-        /*
-        We're using getPreferences() here instead of getSharedPreferences() since getPreferences()
-        provides us with the default SharedPreferences for the current activity. If we used
-        getSharedPreferences(), then other activities could potentially access the same
-        SharedPreferences file. We only want PostSearch to be able to save the access token
-        for now, so getPreferences() works fine for our purposes.
-        */
-
-        SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
-        editor.putString(PREFERENCES_KEY_TOKEN_RESPONSE_ACCESS_TOKEN, tokenResponse.getAccessToken());
-        editor.putString(PREFERENCES_KEY_TOKEN_RESPONSE_TOKEN_TYPE, tokenResponse.getTokenType());
-        editor.putLong(PREFERENCES_KEY_TOKEN_RESPONSE_EXPIRATION, tokenResponse.getExpiration());
-        editor.putLong(PREFERENCES_KEY_TOKEN_RESPONSE_TIME_SAVED, System.currentTimeMillis()/1000);
-        editor.commit();
-
-    }
+//    private void saveTokenResponse(TokenResponse tokenResponse){
+//        /*
+//        TODO: Maybe adjust this so that the token is instead saved to SharedPreferences. This way,
+//        you can get the access token within SearchService by creating a helper method within
+//        Utilities.
+//         */
+//
+//        /*
+//        We're using getPreferences() here instead of getSharedPreferences() since getPreferences()
+//        provides us with the default SharedPreferences for the current activity. If we used
+//        getSharedPreferences(), then other activities could potentially access the same
+//        SharedPreferences file. We only want PostSearch to be able to save the access token
+//        for now, so getPreferences() works fine for our purposes.
+//        */
+//
+//        SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
+//        editor.putString(PREFERENCES_KEY_TOKEN_RESPONSE_ACCESS_TOKEN, tokenResponse.getAccessToken());
+//        editor.putString(PREFERENCES_KEY_TOKEN_RESPONSE_TOKEN_TYPE, tokenResponse.getTokenType());
+//        editor.putLong(PREFERENCES_KEY_TOKEN_RESPONSE_EXPIRATION, tokenResponse.getExpiration());
+//        editor.putLong(PREFERENCES_KEY_TOKEN_RESPONSE_TIME_SAVED, System.currentTimeMillis()/1000);
+//        editor.commit();
+//
+//    }
 
     /**
      * Determines if the access token is expired or not.
@@ -311,38 +312,38 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
      * @return <code>true</code> if <code>mAccessToken</code> is expired, <code>false</code>
      * otherwise.
      */
-    private boolean accessTokenExpired() {
-        // If mAccessToken hasn't yet been initialized, that means that we need to try to retrieve
-        // an access token. In this case, we will return true;
-        if (mAccessToken == null) {
-            return true;
-        }
-
-        // Otherwise, we will read from SharedPreferences to determine if the access token is expired or not
-        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
-        long timeSaved = preferences.getLong(PREFERENCES_KEY_TOKEN_RESPONSE_TIME_SAVED, 0L);
-        long expiration = preferences.getLong(PREFERENCES_KEY_TOKEN_RESPONSE_EXPIRATION, 0L);
-
-        // Determining how much time has passed since we saved the access token
-        long now = System.currentTimeMillis()/1000;
-        long timePassed = Math.abs(now - timeSaved);
-
-        if (timePassed >= expiration) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+//    private boolean accessTokenExpired() {
+//        // If mAccessToken hasn't yet been initialized, that means that we need to try to retrieve
+//        // an access token. In this case, we will return true;
+//        if (mAccessToken == null) {
+//            return true;
+//        }
+//
+//        // Otherwise, we will read from SharedPreferences to determine if the access token is expired or not
+//        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+//        long timeSaved = preferences.getLong(PREFERENCES_KEY_TOKEN_RESPONSE_TIME_SAVED, 0L);
+//        long expiration = preferences.getLong(PREFERENCES_KEY_TOKEN_RESPONSE_EXPIRATION, 0L);
+//
+//        // Determining how much time has passed since we saved the access token
+//        long now = System.currentTimeMillis()/1000;
+//        long timePassed = Math.abs(now - timeSaved);
+//
+//        if (timePassed >= expiration) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
 
     /**
      * A helper method to get the value of the access token from SharedPreferences.
      *
      * @return The current value of the access token that was saved to SharedPreferences.
      */
-    private String getAccessToken() {
-        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
-        return preferences.getString(PREFERENCES_KEY_TOKEN_RESPONSE_ACCESS_TOKEN, "");
-    }
+//    private String getAccessToken() {
+//        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+//        return preferences.getString(PREFERENCES_KEY_TOKEN_RESPONSE_ACCESS_TOKEN, "");
+//    }
 
     /**
      * Prepares several member variables for a search to be performed. In particular, it
@@ -359,8 +360,8 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
         mClient = ClientGenerator.createClient(SearchClient.class);
 
         // Make sure that mAccessToken is using the most recent token that we have
-        mAccessToken = getAccessToken();
-        boolean hasExpired = accessTokenExpired();
+        mAccessToken = Utilities.getAccessToken(this);
+        boolean hasExpired = Utilities.isAccessTokenExpired(this);
         if (mAccessToken.isEmpty() || hasExpired){
             retrieveAccessToken();
         }
@@ -369,8 +370,8 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
     private void prepareAccessToken(){
 
         // Make sure that mAccessToken is using the most recent token that we have
-        mAccessToken = getAccessToken();
-        boolean hasExpired = accessTokenExpired();
+        mAccessToken = Utilities.getAccessToken(this);
+        boolean hasExpired = Utilities.isAccessTokenExpired(this);
         if (mAccessToken.isEmpty() || hasExpired){
             retrieveAccessToken();
         }
@@ -402,23 +403,6 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
 //        SearchType searchType = SearchType.valueOf(String.valueOf(mSearchType));
         searchIntent.putExtra(SearchService.EXTRA_SEARCH_TYPE, mSearchType);
         startService(searchIntent);
-
-//        switch (mSearchType){
-//            case 0:
-//                SearchType searchType = SearchType.valueOf(String.valueOf(mSearchType));
-//                searchIntent.putExtra(SearchService.EXTRA_SEARCH_TYPE, searchType);
-//                startService(searchIntent);
-//                break;
-//            case 1:
-//                fetchAlbums(mQuery);
-//                break;
-//            case 2:
-//                fetchArtists(mQuery);
-//                break;
-//            default:
-//                Log.e(TAG, "Search could not be performed, unknown search type");
-//                break;
-//        }
     }
 
     @Override

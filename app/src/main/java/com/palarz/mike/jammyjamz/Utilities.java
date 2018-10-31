@@ -11,17 +11,14 @@ import android.support.v7.graphics.Palette;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.palarz.mike.jammyjamz.R;
 import com.palarz.mike.jammyjamz.model.Post;
+import com.palarz.mike.jammyjamz.networking.TokenResponse;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-
-import okhttp3.internal.Util;
 
 
 public class Utilities {
@@ -30,6 +27,45 @@ public class Utilities {
 
     // A default username in case the user isn't logged in somehow
     public static final String USERNAME_ANONYMOUS = "Anonymous";
+
+    public static boolean isAccessTokenExpired(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.shared_preferences_file_name_default), Context.MODE_PRIVATE);
+        String accessToken = sharedPreferences.getString(context.getString(R.string.shared_preferences_key_access_token), "");
+
+        // If the access token has it's default value, then that means it hasn't yet been initialized.
+        if (accessToken.isEmpty()) {
+            return true;
+        }
+
+        // Otherwise, we will read from SharedPreferences to determine if the access token is expired or not
+        long timeSaved = sharedPreferences.getLong(context.getString(R.string.shared_preferences_key_access_token_time_saved), 0L);
+        long expiration = sharedPreferences.getLong(context.getString(R.string.shared_preferences_key_access_token_expiration), 0L);
+
+        // Determining how much time has passed since we saved the access token
+        long now = System.currentTimeMillis()/1000;
+        long timePassed = Math.abs(now - timeSaved);
+
+        if (timePassed >= expiration) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static void saveTokenResponse(Context context, TokenResponse tokenResponse){
+        SharedPreferences.Editor editor = context.getSharedPreferences(context.getString(R.string.shared_preferences_file_name_default), Context.MODE_PRIVATE).edit();
+
+        editor.putString(context.getString(R.string.shared_preferences_key_access_token), tokenResponse.getAccessToken());
+        editor.putString(context.getString(R.string.shared_preferences_key_token_type), tokenResponse.getTokenType());
+        editor.putLong(context.getString(R.string.shared_preferences_key_access_token_expiration), tokenResponse.getExpiration());
+        editor.putLong(context.getString(R.string.shared_preferences_key_access_token_time_saved), System.currentTimeMillis()/1000);
+        editor.commit();
+    }
+
+    public static String getAccessToken(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.shared_preferences_file_name_default), Context.MODE_PRIVATE);
+        return sharedPreferences.getString(context.getString(R.string.shared_preferences_key_access_token), "");
+    }
 
     /**
      * Provides the current username. This is a helper method which provides the current username.
@@ -89,14 +125,6 @@ public class Utilities {
                 });
     }
 
-    public static void setupArtworkForWidget(Post post, RemoteViews remoteViews, int appWidgetID){
-        Picasso.get()
-                .load(post.getPhotoUrl())
-                .placeholder(R.drawable.ic_artwork_placeholder)
-                .error(R.drawable.ic_error)
-                .into(remoteViews, R.id.list_item_app_widget_artwork, new int[] {appWidgetID} );
-    }
-
     public static String getUserPhoto(){
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null){
@@ -126,9 +154,6 @@ public class Utilities {
         }
     }
 
-    public static void checkNetworkState(TextView connectionIndicator){
-
-    }
 }
 
 

@@ -8,6 +8,13 @@
     <string name="shared_preferences_key_username">com.palarz.mike.jammyjamz.username</string>
     <string name="no_internet_connection">Internet connection lost :/</string>
 
+    <!--Default shared preferences-->
+    <string name="shared_preferences_file_name_default">com.palarz.mike.jammyjamz.shared_preferences_default</string>
+    <string name="shared_preferences_key_access_token">com.palarz.mike.jammyjamz.shared_preferences_key_access_token</string>
+    <string name="shared_preferences_key_token_type">com.palarz.mike.jammyjamz.shared_preferences_key_token_type</string>
+    <string name="shared_preferences_key_access_token_expiration">com.palarz.mike.jammyjamz.shared_preferences_key_access_token_expiration</string>
+    <string name="shared_preferences_key_access_token_time_saved">com.palarz.mike.jammyjamz.shared_preferences_key_access_token_time_saved</string>
+
     <!--Newsfeed-->
     <string name="newsfeed_content_description_newsfeed">Newsfeed</string>
     <string name="newsfeed_content_description_fab">New post</string>
