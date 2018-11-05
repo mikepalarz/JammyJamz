@@ -5,11 +5,17 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
+import android.transition.Explode;
+import android.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,6 +33,20 @@ public class Utilities {
 
     // A default username in case the user isn't logged in somehow
     public static final String USERNAME_ANONYMOUS = "Anonymous";
+
+    public static boolean isLollipop(){
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+    }
+
+    public static void setTransitions(AppCompatActivity activity){
+        // Check if we're running on Android 5.0 or higher
+        if (isLollipop()) {
+            // Apply activity transition
+            activity.getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+            activity.getWindow().setEnterTransition(new Explode());
+            activity.getWindow().setExitTransition(new Explode());
+        }
+    }
 
     public static boolean isAccessTokenExpired(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.shared_preferences_file_name_default), Context.MODE_PRIVATE);

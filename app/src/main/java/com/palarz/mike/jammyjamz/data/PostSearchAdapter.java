@@ -1,5 +1,7 @@
 package com.palarz.mike.jammyjamz.data;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -131,7 +133,12 @@ public abstract class PostSearchAdapter<T extends SpotifyObject> extends Recycle
             Intent intent = new Intent(mContext, WritePost.class);
             intent.putExtra(WritePost.EXTRA_CONTENT, aPost);
 
-            mContext.startActivity(intent);
+            if (Utilities.isLollipop()){
+                mContext.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) mContext).toBundle());
+            } else {
+                mContext.startActivity(intent);
+            }
+
         }
     }
 

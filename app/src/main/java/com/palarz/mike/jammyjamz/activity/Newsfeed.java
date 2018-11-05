@@ -1,5 +1,6 @@
 package com.palarz.mike.jammyjamz.activity;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -40,6 +41,7 @@ import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.internal.Util;
 
 /**
  * An <code>Activity</code> that displays a newsfeed interface to the end user. It uses the
@@ -97,6 +99,8 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utilities.setTransitions(this);
+
         setContentView(R.layout.activity_newsfeed);
         ButterKnife.bind(this);
 
@@ -416,6 +420,11 @@ public class Newsfeed extends AppCompatActivity implements PostTypeSelection.Pos
         intent.putExtra(PostSearch.EXTRA_SEARCH_TYPE, postType);
         intent.putExtra(PostSearch.EXTRA_LAUNCH_DIALOG, false);
 
-        startActivity(intent);
+        if (Utilities.isLollipop()){
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        } else {
+            startActivity(intent);
+        }
+
     }
 }

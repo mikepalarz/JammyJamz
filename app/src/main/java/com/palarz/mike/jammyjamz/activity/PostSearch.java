@@ -26,6 +26,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.palarz.mike.jammyjamz.JammyJamzApplication;
+import com.palarz.mike.jammyjamz.Utilities;
 import com.palarz.mike.jammyjamz.data.SearchService;
 import com.palarz.mike.jammyjamz.data.SearchService.SearchType;
 import com.palarz.mike.jammyjamz.fragment.PostTypeSelection;
@@ -68,6 +69,8 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utilities.setTransitions(this);
+
         setContentView(R.layout.activity_post_search);
         ButterKnife.bind(this);
 
