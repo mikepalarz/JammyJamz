@@ -6,14 +6,15 @@
 
     <TextView
         android:id="@+id/no_internet_indicator"
+        style="@style/TextAppearance.AppCompat.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/holo_red_light"
-        android:textColor="@android:color/white"
-        android:text="@string/no_internet_connection"
-        style="@style/TextAppearance.AppCompat.Button"
         android:layout_gravity="bottom"
+        android:background="@android:color/holo_red_light"
+        android:text="@string/no_internet_connection"
         android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:visibility="gone"
         app:layout_insetEdge="bottom"/>
 
 </merge>

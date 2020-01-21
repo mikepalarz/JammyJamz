@@ -21,10 +21,16 @@ import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.palarz.mike.jammyjamz.JammyJamzApplication;
 import com.palarz.mike.jammyjamz.Utilities;
 import com.palarz.mike.jammyjamz.data.SearchService;
@@ -129,7 +135,20 @@ public class PostSearch extends AppCompatActivity implements PostTypeSelection.P
     protected void onResume() {
         super.onResume();
 
-        JammyJamzApplication.getInstance().setupNoInternetIndicator(mNoInternet);
+        DatabaseReference presenceReference = FirebaseDatabase.getInstance().getReference(".info/connected");
+        presenceReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean connected = dataSnapshot.getValue(Boolean.class);
+                int visibility = connected ? View.GONE : View.VISIBLE;
+                mNoInternet.setVisibility(visibility);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w(TAG, "Listener was cancelled at .info/connected");
+            }
+        });
     }
 
     @Override
